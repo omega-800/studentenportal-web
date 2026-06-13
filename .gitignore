@@ -16,3 +16,5 @@ coverage.xml
 .sass-cache/
 *.egg-info/
 .pytest_cache/
+result
+.direnv
