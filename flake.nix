@@ -19,6 +19,7 @@
 
   outputs =
     {
+      self,
       nixpkgs,
       treefmt-nix,
       pre-commit-hooks,
@@ -77,9 +78,13 @@
           pythonEnv =
             assert project.validators.validateVersionConstraints { inherit python; } == { };
             (python.withPackages (project.renderers.withPackages { inherit python; }));
+
+          inherit (self.checks.${pkgs.stdenv.hostPlatform.system}) pre-commit-check;
         in
         {
           default = pkgs.mkShell {
+            inherit (pre-commit-check) shellHook;
+            buildInputs = pre-commit-check.enabledPackages;
             packages = [
               # pythonEnv
               (python.withPackages (
@@ -146,19 +151,19 @@
               ))
             ];
           };
-
-          formatter = eachSystem treefmtPkg;
-
-          checks = eachSystem (pkgs: {
-            pre-commit-check = pre-commit-hooks.lib.${pkgs.stdenv.hostPlatform.system}.run {
-              src = ./.;
-              hooks.treefmt = {
-                enable = true;
-                packageOverrides.treefmt = treefmtPkg pkgs;
-              };
-            };
-          });
         }
       );
+
+      formatter = eachSystem treefmtPkg;
+
+      checks = eachSystem (pkgs: {
+        pre-commit-check = pre-commit-hooks.lib.${pkgs.stdenv.hostPlatform.system}.run {
+          src = ./.;
+          hooks.treefmt = {
+            enable = true;
+            packageOverrides.treefmt = treefmtPkg pkgs;
+          };
+        };
+      });
     };
 }
