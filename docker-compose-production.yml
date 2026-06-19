@@ -1,84 +1,62 @@
 # See https://github.com/studentenportal/deploy2020 for deployment docs.
-
 version: '3.5'
 services:
-
-# nginx - reverse proxy
+  # nginx - reverse proxy
   nginx:
     image: studentenportal/nginx:latest
-
     build:
       context: .
       dockerfile: deploy/production/nginx/Dockerfile
-
     ports:
       - 80:80
       - 443:443
-
     volumes:
       # HOST_OR_NAME:CONTAINER
       - "/home/studentenportal/media:/srv/www/studentenportal/media"
       - "studentenportal-dehydrated:/etc/dehydrated"
       - "studentenportal-static:/srv/www/studentenportal/static"
-
     environment:
-      com.centurylinklabs.watchtower.enable: "false"  # Must be built manually for now, since it's not published to Docker Hub
-
+      com.centurylinklabs.watchtower.enable: "false" # Must be built manually for now, since it's not published to Docker Hub
     networks:
       studentenportal-prod:
         aliases:
           - webserver
-
     restart: unless-stopped
-
     depends_on:
       - studentenportal
-
-# postgres - Database server
+      # postgres - Database server
   postgres:
+    # FIXME: test first
+    # image: postgres:13
     image: postgres:12
-
     volumes:
       # HOST:CONTAINER
       - "/home/studentenportal/postgres-data:/var/lib/postgresql/data"
-
-    env_file:
-      ~/studentenportal.env
-
+    env_file: ~/studentenportal.env
     networks:
-        studentenportal-prod:
-          aliases:
-            - database
-            - postgres
-
+      studentenportal-prod:
+        aliases:
+          - database
+          - postgres
     restart: unless-stopped
-
-# studentenportal - Application server with python
+    # studentenportal - Application server with python
   studentenportal:
     image: studentenportal/web:latest
-
     volumes:
       # HOST_OR_NAME:CONTAINER
       - "/home/studentenportal/media:/srv/www/studentenportal/media"
       - "studentenportal-static:/srv/www/studentenportal/static"
-
-    env_file:
-      ~/studentenportal.env
-
+    env_file: ~/studentenportal.env
     networks:
       studentenportal-prod:
         aliases:
           - application
-
     restart: unless-stopped
-
     depends_on:
       - postgres
-
 networks:
   studentenportal-prod:
     driver: bridge
-
 volumes:
   studentenportal-static:
   studentenportal-dehydrated:

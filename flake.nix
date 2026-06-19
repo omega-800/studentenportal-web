@@ -51,7 +51,6 @@
             # docker
             dockerfmt.enable = true;
             # yaml
-            yamllint.enable = true;
             yamlfmt.enable = true;
             # toml
             taplo.enable = true;

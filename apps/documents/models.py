@@ -214,8 +214,8 @@ class DocumentDownload(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True, editable=False)
 
     class Meta:
-        index_together = [
-            ("document", "timestamp"),
+        indexes = [
+            models.Index(fields=["document", "timestamp"]),
         ]
 
 

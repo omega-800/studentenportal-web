@@ -2,6 +2,8 @@
 #  of the studentenportal.
 # Images have the same versioning as the studentenportal itself,
 #  and are uploaded to dockerhub.
+
+# FIXME: update
 FROM studentenportal/base:3.9-0
 ARG UID=1001
 ARG GID=1001
@@ -26,6 +28,6 @@ RUN chown -R studentenportal:studentenportal /srv/www/studentenportal/
 VOLUME ["/srv/www/studentenportal/media"]
 VOLUME ["/srv/www/studentenportal/static"]
 
-ENV PATH /usr/local/bin/:$PATH
+ENV PATH=/usr/local/bin/:$PATH
 USER studentenportal
 CMD ["./start.sh"]
