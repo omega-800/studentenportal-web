@@ -1,5 +1,4 @@
 # See https://github.com/studentenportal/deploy2020 for deployment docs.
-version: '3.5'
 services:
   # nginx - reverse proxy
   nginx:

@@ -6,7 +6,6 @@
 #  ||
 # postgres ----- postgres-data:/var/lib/postgresql/data
 #
-version: '3.5'
 services:
   postgres_dev:
     image: postgres:13

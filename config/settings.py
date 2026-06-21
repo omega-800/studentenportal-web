@@ -201,6 +201,7 @@ INSTALLED_APPS = (
     "apps.lecturers",
     "apps.api",
     "apps.user_stats",
+    "apps.tipps",
     # Overridable 3rd party apps
     "messagegroups",
     "registration",

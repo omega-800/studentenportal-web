@@ -1,0 +1,35 @@
+{% extends 'base.html' %} {% load tabs %}
+{% load thumbnail %}
+{% load compress %}
+
+{% block title %}Tipps und Tricks{% endblock %}
+
+{% block bodyclass %}tipp_list{% endblock %}
+
+{% block navigation %}
+    {% activetab 'navigation' 'tipps' %}
+    {{ block.super }}
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    {% compress js %}
+        <!-- <script src="{{ STATIC_URL }}js/quote_votes.js"></script> -->
+    {% endcompress %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h1>Tipps und Tricks</h1>
+    </div>
+
+    <p>Tipps und Tricks</p>
+
+    {% if tipps %}
+
+    {% else %}
+        <p><em>Keine Tipps gefunden.</em></p>
+    {% endif %}
+
+{% endblock %}

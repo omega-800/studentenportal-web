@@ -82,6 +82,9 @@
                     <li class="{% ifactivetab 'navigation' 'events' %}active{% endifactivetab %}">
                         <a href="{% url 'events:event_list' %}"><i class="icon-calendar {% ifactivetab 'navigation' 'events' %}icon-white{% endifactivetab %}"></i> Events</a>
                     </li>
+                    <li class="{% ifactivetab 'navigation' 'tipps' %}active{% endifactivetab %}">
+                        <a href="{% url 'tipps:tipp_list' %}"><i class="icon-questionmark {% ifactivetab 'navigation' 'tipps' %}icon-white{% endifactivetab %}">?</i> Tipps</a>
+                    </li>
                     <!--<li class="{% ifactivetab 'navigation' 'stats' %}active{% endifactivetab %}">
                         <a href="{% url 'stats' %}"><i class="icon-statistics {% ifactivetab 'navigation' 'stats' %}icon-white{% endifactivetab %}"></i> Statistiken</a>
                     </li>-->
