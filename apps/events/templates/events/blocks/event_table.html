@@ -1,3 +1,5 @@
+{% load md %}
+{# TODO: show location, time #}
 {% for event in object_list %}
     <article class="event">
         <a href="{% url 'events:event_detail' event.pk %}">
@@ -15,7 +17,7 @@
                 {% else %}
                     <span class="author">Gelöschter User<span>
                 {% endif %}
-                {{ event.description|urlize|linebreaks }}
+                {{ event.description|urlize|render_markdown|linebreaks }}
             </div>
         </a>
     </article>

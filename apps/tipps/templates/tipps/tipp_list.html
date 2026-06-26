@@ -24,12 +24,16 @@
         <h1>Tipps und Tricks</h1>
     </div>
 
+    {# TODO: pagination, C(R)UD, voting #}
+
     <p>Tipps und Tricks</p>
 
-    {% if tipps %}
-
-    {% else %}
+    {% for tipp in object_list %}
+        <article class="quote {% if tipp.author_id == user.pk %}quote-edit{% endif %}">
+          <p>{{ tipp.date|date }} - {{ tipp.description }}</p>
+        </article>
+    {% empty %}
         <p><em>Keine Tipps gefunden.</em></p>
-    {% endif %}
+    {% endfor %}
 
 {% endblock %}

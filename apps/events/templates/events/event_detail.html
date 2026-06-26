@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load md %}
 {% load tabs %}
 {% load thumbnail %}
 
@@ -29,7 +30,7 @@
         {% endif %}
     </em></p>
 
-    {{ event.description|urlize|linebreaks }}
+    {{ event.description|urlize|render_markdown|linebreaks }}
 
     <ul class="blacklist unstyled">
         <li><strong>Start:</strong> {{ event.start_date|date:"D, d. F Y" }} {{ event.start_time|time:"H:i" }}</li>

@@ -18,7 +18,7 @@ from apps.tipps import forms, models
 class TippList(ListView):
     paginate_by = 50
     model = models.Tipp
-    # def get_context_data(self, **kwargs):
-    #     model = models.Tipp
-    #     context = super().get_context_data(**kwargs)
-    #     return context
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
