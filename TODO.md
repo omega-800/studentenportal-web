@@ -16,7 +16,7 @@
         - [ ] Liken von kommentierten Kommentaren
           - [ ] Kommentieren
 
-- Wünsche
+- [ ] Wünsche/Feedbackformular
 
 # technical
 
