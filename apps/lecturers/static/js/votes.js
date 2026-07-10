@@ -7,12 +7,12 @@ $(document).ready(function() {
         }
 
         const url = $(this).parent().attr('data-url');
-        $.post(url, {'vote': vote}, quote_vote_callback);
+        $.post(url, {'vote': vote}, vote_callback);
     });
 });
 
-function quote_vote_callback(data) {
-    wrapper = $('.votebuttons[data-quote-pk=' + data.quote_pk + ']');
+function vote_callback(data) {
+    wrapper = $('.votebuttons[data-vote-elem-pk=' + data.vote_elem_pk + ']');
     if (data.vote == 'up') {
         wrapper.children('.downvote').removeClass('active');
         wrapper.children('.upvote').addClass('active');
