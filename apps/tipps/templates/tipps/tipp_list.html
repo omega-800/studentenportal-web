@@ -48,6 +48,11 @@
           {% include 'lecturers/blocks/vote_buttons.html' with vote_elem=tipp vote_url=vote_url %}
           <div class="quote-wrapper">
             <p><em>{{ tipp.summary }}</em></p>
+            {% if tipp.author %}
+                <a rel="author" href="{% url 'user' tipp.author.pk tipp.author.username|slugify %}">{{ tipp.author.name }}</a>
+            {% else %}
+                <span class="author">Gelöschter User</span>
+            {% endif %}
             <p>{{ tipp.description }}</p>
             <p>{{ tipp.date|date }}</p>
           </div>

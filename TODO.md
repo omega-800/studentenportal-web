@@ -3,12 +3,14 @@
 - [ ] Events
 
   - [ ] Tutorate: Wann, wo – Weiteres nach Bedarf
-  - [ ] Besseres Design der Events
-  - [ ] Recurring events
+    - [ ] TODO: add recurring event for "Tutorate"
+  - [x] Besseres Design der Events
+  - [x] Recurring events
+    - [ ] TODO: testing, show clearer distinction?
 
 - [ ] Tipps & Tricks: unsere Sammlung an Links und Infos
 
-  - [ ] Verwalten von Tipps & Tricks durch Studierende
+  - [x] Verwalten von Tipps & Tricks durch Studierende
   - [x] Liken von Tipps & Tricks
   - [ ] Kommentieren
     - [ ] Liken von Kommentaren

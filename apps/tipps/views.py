@@ -35,8 +35,10 @@ def extend_tipps_with_votes(tipps, user_pk):
 
     return tipps.extra(
         select={
-            "voted_up": vote_base_query % ("t", user_pk),
-            "voted_down": vote_base_query % ("f", user_pk),
+            "voted_up": False if user_pk is None else vote_base_query % ("t", user_pk),
+            "voted_down": (
+                False if user_pk is None else vote_base_query % ("f", user_pk)
+            ),
             "vote_count": count_query,
             "upvote_count": count_base_query % "t",
             "downvote_count": count_base_query % "f",

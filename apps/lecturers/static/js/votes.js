@@ -1,6 +1,8 @@
 $(document).ready(function() {
     $('.votebuttons div').click(function() {
-        if ($(this).hasClass('active')) {
+        if ($(this).hasClass('disabled')) {
+          return;
+        } else if ($(this).hasClass('active')) {
             var vote = 'remove';
         } else {
             var vote = $(this).hasClass('upvote') ? 'up' : 'down';

@@ -64,10 +64,10 @@ $color-search-background: #E1E5E8;
 // Please note that when using the date the container has
 // to use a relative position and clear afterwards
 .date {
-    position: absolute;
-    left: 0.5rem;
+    width: 7rem;
+    text-align: center;
 
-    .day, .month {
+    .day, .month, .year {
         font-family: $font-title;
         display: block;
         line-height: 1;
@@ -80,13 +80,12 @@ $color-search-background: #E1E5E8;
     }
 
     .month {
-        margin-left: 0.25rem;
         font-size: 2rem;
         color: darken($color-gray, 20%);
     }
 
     .year {
-        margin-left: 0.25rem;
+        margin-top: 0.5rem;
         font-size: 1.1rem;
         color: darken($color-gray, 10%);
     }
@@ -98,6 +97,7 @@ $color-search-background: #E1E5E8;
 
 /* ===LIST CARDS=== */
 %list-card {
+    // TODO: refactor to use "modern" css + add mobile layout
     @include pie-clearfix;
     margin-top: 1em;
     //Use only half padding because border reserves already
@@ -113,7 +113,6 @@ $color-search-background: #E1E5E8;
     }
 
     .summary {
-        margin-left: 4em;
         float: left;
     }
 }
@@ -135,6 +134,10 @@ $color-search-background: #E1E5E8;
     @extend %box;
     @extend %list-card;
     min-height: 9.5rem;
+    // TODO: refactor %list-card
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    grid-gap: 0.5rem;
 }
 
 /* ===VOTE BUTTONS=== */
@@ -165,6 +168,13 @@ $color-vote: map-get($color-voting, "vote");
         &:before { color: $color-vote-down; }
     }
 
+    .upvote.disabled, .downvote.disabled {
+        &:hover {
+            cursor: not-allowed;
+            &:before { color: $color-vote; }
+        }
+    }
+
     .vote_sum {
         font-size: 3rem;
         font-family: $font-title;
@@ -183,7 +193,31 @@ $color-vote: map-get($color-voting, "vote");
     //Force all really long links to break
     .summary {
         a { word-break: break-all; }
+        margin-left: 0px;
     }
+    // TODO: refactor %list-card
+    .event-top {
+      display: grid;
+      grid-template-columns: 7rem 1fr 12rem;
+      grid-gap: 0.5rem;
+      .event-picture img {
+        width: 12rem;
+        height: 12rem;
+      }
+    }
+}
+
+.md-content {
+  table{
+    border-collapse: collapse;
+  }
+  th {
+    font-weight: 700;
+  }
+  th, td  {
+    padding: 0.5rem;
+    border: 2px solid $color-gray;
+  }
 }
 
 @import "modules/documents";
