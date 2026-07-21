@@ -17,6 +17,9 @@
       - [ ] Kommentieren
         - [ ] Liken von kommentierten Kommentaren
           - [ ] Kommentieren
+    - https://github.com/studentenportal/web/issues/104
+    - https://github.com/studentenportal/web/issues/76
+    - https://github.com/studentenportal/web/issues/63
 
 - [ ] Wünsche/Feedbackformular
 

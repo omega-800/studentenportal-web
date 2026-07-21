@@ -4,17 +4,20 @@
 {% for event in object_list %}
     <article class="event">
         <a href="{% url 'events:event_detail' event.pk %}">
+            <time class="date" datetime="{{ event.start_date|date:"Y-m-d" }}">
+                <span class="day">{{ event.start_date|date:"d" }}</span>
+                <span class="month">{{ event.start_date|date:"M" }}</span>
+                {#% if event.start_date.year <= current_year %#}
+                    <span class="year">{{ event.start_date|date:"Y" }}</span>
+                {#% endif %#}
+            </time>
+        </a>
+        <div class="summary">
             <div class="event-top">
-              <time class="date" datetime="{{ event.start_date|date:"Y-m-d" }}">
-                  <span class="day">{{ event.start_date|date:"d" }}</span>
-                  <span class="month">{{ event.start_date|date:"M" }}</span>
-                  {% if event.start_date.year <= current_year %}
-                      <span class="year">{{ event.start_date|date:"Y" }}</span>
-                  {% endif %}
-              </time>
-
               <div class="event-title">
-                  <h3>{{ event.summary }}</h3>
+                  <a href="{% url 'events:event_detail' event.pk %}">
+                    <h3>{{ event.summary }}</h3>
+                  </a>
                   {% if event.author %}
                       <a rel="author" href="{% url 'user' event.author.pk event.author.username|slugify %}">{{ event.author.name }}</a>
                   {% else %}
@@ -22,10 +25,10 @@
                   {% endif %}
 
                   <p>
-                  <strong>Zeit:</strong> {{ event.start_date|date:"D, d. F Y" }} {{ event.start_time|time:"H:i" }}
-                  {% if event.end_date or event.end_time %}
-                      - {% if event.end_date %}{{ event.end_date|date:"D, d. F Y" }}{% else %}{{ event.start_date|date:"D, d. F Y" }}{% endif %} {{ event.end_time|time:"H:i" }}
-                  {% endif %}
+                    <strong>Zeit:</strong> {{ event.start_date|date:"D, d. F Y" }} {{ event.start_time|time:"H:i" }}
+                    {% if event.end_date or event.end_time %}
+                        - {% if event.end_date %}{{ event.end_date|date:"D, d. F Y" }}{% else %}{{ event.start_date|date:"D, d. F Y" }}{% endif %} {{ event.end_time|time:"H:i" }}
+                    {% endif %}
                   </p>
 
                   {% if event.location %}<p><strong>Ort:</strong> {{ event.location }}</p>{% endif %}
@@ -40,9 +43,9 @@
               {% endif %}
             </div>
 
-            <div class="summary md-content">
+            <div class="md-content">
                 {{ event.description|urlize|render_markdown }}
             </div>
-        </a>
+        </div>
     </article>
 {% endfor %}
