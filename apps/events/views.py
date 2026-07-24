@@ -5,8 +5,7 @@ from urllib.parse import urlsplit, urlunsplit
 import vobject
 from dateutil.relativedelta import relativedelta
 from django.contrib import messages
-from django.http import (HttpResponse, HttpResponseForbidden,
-                         HttpResponseRedirect)
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import TemplateView, View
 from django.views.generic.detail import DetailView

@@ -4,8 +4,12 @@ from urllib.parse import urlsplit, urlunsplit
 import vobject
 from dateutil.relativedelta import relativedelta
 from django.contrib import messages
-from django.http import (HttpResponse, HttpResponseBadRequest,
-                         HttpResponseForbidden, JsonResponse)
+from django.http import (
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseForbidden,
+    JsonResponse,
+)
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic import TemplateView, View

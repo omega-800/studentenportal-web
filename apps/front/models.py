@@ -12,7 +12,6 @@ def strip_mail_part(username):
 
 
 class CustomUserManager(UserManager):
-
     """
     By default, django.contrib.auth does case _sensitive_ username authentication, which isn't what is
     generally expected. By defining a custom user manager, we can compare user
