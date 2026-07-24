@@ -85,6 +85,7 @@
             inherit (pre-commit-check) shellHook;
             buildInputs = pre-commit-check.enabledPackages;
             packages = [
+              pkgs.black
               # pythonEnv
               (python.withPackages (
                 p: with p; [

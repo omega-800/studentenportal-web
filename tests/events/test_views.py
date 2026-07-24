@@ -33,7 +33,9 @@ def test_events(transactional_db):
         end_time=dt2.time(),
         location="Gebäude 1",
         author=user1,
+        repeats=False,
     )
+
     baker.make(
         models.Event,
         summary="Afterparty",
@@ -41,6 +43,7 @@ def test_events(transactional_db):
         start_time=dt2.time(),
         end_date=dt2.date(),
         author=user2,
+        repeats=False,
     )
 
 

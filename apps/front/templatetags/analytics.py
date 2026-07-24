@@ -23,8 +23,7 @@ class ShowGoogleAnalyticsJS(template.Node):
                 "<!-- Goggle Analytics not included because you are in debug mode! -->"
             )
 
-        return (
-            """
+        return """
         <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -33,9 +32,7 @@ class ShowGoogleAnalyticsJS(template.Node):
             ga('create', '%s', 'auto');
             ga('send', 'pageview');
         </script>
-        """
-            % code
-        )
+        """ % code
 
 
 def googleanalyticsjs(parser, token):

@@ -1,5 +1,4 @@
 name: CI
-
 on:
   push:
     branches:
@@ -9,37 +8,31 @@ on:
     # Schedule weekly builds on master, to ensure that the Docker image gets
     # rebuilt regularly (in order to include security fixes in the base image).
     - cron: '5 4 * * 5'
-
 jobs:
-
   test:
     name: run tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
+      - uses: actions/checkout@v7
       - name: Fix permissions of working directory
         run: chmod 777 .
-      - name: Start containers with docker-compose
-        run: docker-compose up -d
+      - name: Start containers with docker compose
+        run: docker compose up -d
         env:
           CONTAINER_COVERAGE_HOME_DIR: /srv/www/studentenportal
       - name: Check running containers
         run: docker ps
-
       - name: Run tests
-        run: docker-compose run --rm studentenportal_dev ./deploy/dev/test.sh --coverage-xml
-
+        run: docker compose run --rm studentenportal_dev ./deploy/dev/test.sh --coverage-xml
       - name: Upload coverage to codecov.io
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v7
         with:
           token: ${{secrets.CODECOV_TOKEN}}
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
       - uses: psf/black@stable
-
   publish:
     name: publish docker image
     runs-on: ubuntu-latest
@@ -51,10 +44,9 @@ jobs:
       - test
       - lint
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
       - name: Fetch repository tags (for git describe to work)
         run: git fetch --prune --unshallow
-
       # Build and push docker image
       # Make sure that the DOCKER_USERNAME and DOCKER_PASSWORD secret variables are set
       - name: Export env vars

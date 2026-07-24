@@ -25,9 +25,7 @@ services:
       - studentenportal
       # postgres - Database server
   postgres:
-    # FIXME: test first
-    # image: postgres:13
-    image: postgres:12
+    image: postgres:13
     volumes:
       # HOST:CONTAINER
       - "/home/studentenportal/postgres-data:/var/lib/postgresql/data"

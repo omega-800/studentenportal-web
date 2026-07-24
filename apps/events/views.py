@@ -5,8 +5,7 @@ from urllib.parse import urlsplit, urlunsplit
 import vobject
 from dateutil.relativedelta import relativedelta
 from django.contrib import messages
-from django.http import (HttpResponse, HttpResponseForbidden,
-                         HttpResponseRedirect)
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import TemplateView, View
 from django.views.generic.detail import DetailView
@@ -148,7 +147,7 @@ class EventCalendar(View):
 
         future, past = add_recurring_events(models.Event.objects.all())
 
-        for event in future + past:
+        for event in reversed(future + past):
             vevent = cal.add("vevent")
             vevent.add("summary").value = event.summary
             vevent.add("description").value = event.description

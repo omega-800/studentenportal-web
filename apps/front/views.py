@@ -105,17 +105,13 @@ class Stats(LoginRequiredMixin, TemplateView):
         ).order_by("-quotes_count")[:3]
 
         # Users
-        context["user_topratings"] = fetchfirst(
-            models.User.objects.raw(
-                """
+        context["user_topratings"] = fetchfirst(models.User.objects.raw("""
                         SELECT u.id AS id, COUNT(DISTINCT lr.lecturer_id) AS lrcount
                         FROM front_user u
                         JOIN lecturers_lecturerrating lr
                             ON u.id = lr.user_id
                         GROUP BY u.id
-                        ORDER BY lrcount DESC"""
-            )
-        )
+                        ORDER BY lrcount DESC"""))
         context["user_topuploads"] = fetchfirst(
             models.User.objects.exclude(username="spimport")
             .annotate(uploads_count=Count("Document"))

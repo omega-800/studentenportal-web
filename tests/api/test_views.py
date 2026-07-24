@@ -308,7 +308,7 @@ class TestQuoteVote:
             resp = auth_client.post(url, {"vote": vote})
             assert resp.status_code == 200
             assert resp.json() == {
-                "quote_pk": quote.pk,
+                "vote_elem_pk": quote.pk,
                 "vote": vote,
                 "vote_count": vote_count,
                 "vote_sum": vote_sum,
