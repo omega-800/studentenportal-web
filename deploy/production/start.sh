@@ -11,6 +11,7 @@ export POSTGRES_HOST="postgres" \
 # Wait for postgres
 while ! curl http://$POSTGRES_HOST:5432/ 2>&1 | grep '52' > /dev/null
 do
+  echo "waiting for http://$POSTGRES_HOST:5432/"
   sleep 1
 done
 

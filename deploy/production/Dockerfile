@@ -23,7 +23,7 @@ RUN python3 -m pip --quiet install --prefix=/install \
 FROM python:3.10-slim
 
 RUN apt-get update && apt-get -y install --no-install-recommends \
-    libpq5 libjpeg-progs graphicsmagick \
+    libpq5 libjpeg-progs graphicsmagick curl \
     && rm -rf /var/lib/apt/lists/*
 
 ARG UID=1001

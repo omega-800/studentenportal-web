@@ -13,7 +13,7 @@ jobs:
     name: run tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
       - name: Fix permissions of working directory
         run: chmod 777 .
       - name: Start containers with docker compose
@@ -25,13 +25,13 @@ jobs:
       - name: Run tests
         run: docker compose run --rm studentenportal_dev ./deploy/dev/test.sh --coverage-xml
       - name: Upload coverage to codecov.io
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v7
         with:
           token: ${{secrets.CODECOV_TOKEN}}
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
       - uses: psf/black@stable
   publish:
     name: publish docker image
@@ -44,7 +44,7 @@ jobs:
       - test
       - lint
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
       - name: Fetch repository tags (for git describe to work)
         run: git fetch --prune --unshallow
       # Build and push docker image
