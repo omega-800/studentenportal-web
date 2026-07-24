@@ -1,5 +1,8 @@
+*.tgz
+*.sql
 *.pyc
 *.swp
+/bak/
 /static
 /media
 /reports
