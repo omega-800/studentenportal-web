@@ -1,0 +1,68 @@
+{% extends 'base.html' %} {% load tabs %}
+{% load thumbnail %}
+{% load compress %}
+
+{% block title %}Tipps und Tricks{% endblock %}
+
+{% block bodyclass %}tipp_list{% endblock %}
+
+{% block navigation %}
+    {% activetab 'navigation' 'tipps' %}
+    {{ block.super }}
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    {% compress js %}
+       <script src="{{ STATIC_URL }}js/votes.js"></script>
+    {% endcompress %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h1>Tipps und Tricks</h1>
+    </div>
+
+    <p>Tipps und Tricks</p>
+
+    {% if user.is_authenticated %}
+        <a class="button button-primary" href="{% url 'tipps:tipp_add' %}">
+            Tipp hinzufügen
+        </a>
+    {% endif %}
+
+    {% if object_list %}
+
+    {% include 'lecturers/blocks/pagination.html' %}
+
+    {% for tipp in object_list %}
+        <article class="quote {% if tipp.author_id == user.pk %}quote-edit{% endif %}">
+          {% if tipp.author_id == user.pk %}
+              <div class="edit">
+                  {% url 'tipps:tipp_delete' tipp.pk as delete_url %}
+                  {% include 'lecturers/blocks/delete_button.html' with small_button=1 delete_url=delete_url %}
+              </div>
+          {% endif %}
+          {% url 'tipps:tipp_vote' tipp.pk as vote_url %}
+          {% include 'lecturers/blocks/vote_buttons.html' with vote_elem=tipp vote_url=vote_url %}
+          <div class="quote-wrapper">
+            <p><em>{{ tipp.summary }}</em></p>
+            {% if tipp.author %}
+                <a rel="author" href="{% url 'user' tipp.author.pk tipp.author.username|slugify %}">{{ tipp.author.name }}</a>
+            {% else %}
+                <span class="author">Gelöschter User</span>
+            {% endif %}
+            <p>{{ tipp.description }}</p>
+            <p>{{ tipp.date|date }}</p>
+          </div>
+        </article>
+    {% endfor %}
+
+    {% include 'lecturers/blocks/pagination.html' %}
+
+    {% else %}
+        <p><em>Keine Tipps gefunden.</em></p>
+    {% endif %}
+
+{% endblock %}

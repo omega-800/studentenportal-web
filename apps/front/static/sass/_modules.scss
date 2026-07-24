@@ -66,8 +66,10 @@ $color-search-background: #E1E5E8;
 .date {
     position: absolute;
     left: 0.5rem;
+    width: 5rem;
+    text-align: center;
 
-    .day, .month {
+    .day, .month, .year {
         font-family: $font-title;
         display: block;
         line-height: 1;
@@ -80,13 +82,12 @@ $color-search-background: #E1E5E8;
     }
 
     .month {
-        margin-left: 0.25rem;
         font-size: 2rem;
         color: darken($color-gray, 20%);
     }
 
     .year {
-        margin-left: 0.25rem;
+        margin-top: 0.5rem;
         font-size: 1.1rem;
         color: darken($color-gray, 10%);
     }
@@ -98,6 +99,7 @@ $color-search-background: #E1E5E8;
 
 /* ===LIST CARDS=== */
 %list-card {
+    // TODO: add mobile layout
     @include pie-clearfix;
     margin-top: 1em;
     //Use only half padding because border reserves already
@@ -165,6 +167,13 @@ $color-vote: map-get($color-voting, "vote");
         &:before { color: $color-vote-down; }
     }
 
+    .upvote.disabled, .downvote.disabled {
+        &:hover {
+            cursor: not-allowed;
+            &:before { color: $color-vote; }
+        }
+    }
+
     .vote_sum {
         font-size: 3rem;
         font-family: $font-title;
@@ -184,6 +193,28 @@ $color-vote: map-get($color-voting, "vote");
     .summary {
         a { word-break: break-all; }
     }
+    .event-top {
+      display: grid;
+      grid-template-columns: 1fr 12rem;
+      grid-gap: 0.5rem;
+      .event-picture img {
+        width: 12rem;
+        height: 12rem;
+      }
+    }
+}
+
+.md-content {
+  table{
+    border-collapse: collapse;
+  }
+  th {
+    font-weight: 700;
+  }
+  th, td  {
+    padding: 0.5rem;
+    border: 2px solid $color-gray;
+  }
 }
 
 @import "modules/documents";

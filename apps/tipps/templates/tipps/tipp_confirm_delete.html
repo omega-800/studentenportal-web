@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load tabs %}
+
+{% block title %}Tipp löschen{% endblock %}
+
+{% block navigation %}
+    {% activetab 'navigation' 'tipps' %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h1>Tipp löschen</h1>
+    </div>
+
+    <p>Möchtest du wirklich den folgenden Tipp aus der Datenbank löschen?</p>
+
+    <ul>
+        <li><strong>Erfasst am</strong> {{ tipp.date }}</li>
+        <li><strong>Titel</strong> {{ tipp.summary }}</li>
+        <li><strong>Beschreibung</strong> {{ tipp.description }}</li>
+    </ul>
+
+    <form method="post">{% csrf_token %}
+        <button type="submit" class="btn btn-danger">
+            <i class="icon-trash icon-white"></i> Ja, ich bin sicher.
+        </button>
+    </form>
+
+{% endblock %}

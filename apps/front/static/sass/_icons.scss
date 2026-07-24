@@ -33,7 +33,8 @@ $icons: (
   doc-alt: "t",
   edit: "u",
   smilie-sad: "v",
-  flag: "w"
+  flag: "w",
+  /* questionmark: "x", */
 );
 
 @mixin icon($icon) {

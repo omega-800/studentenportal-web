@@ -9,6 +9,7 @@ from apps.documents import urls as document_urls
 from apps.events import urls as event_urls
 from apps.front import views
 from apps.lecturers import urls as lecturer_urls
+from apps.tipps import urls as tipp_urls
 
 admin.autodiscover()
 
@@ -23,6 +24,7 @@ urlpatterns = [
     ),
     re_path(r"^statistiken/$", views.Stats.as_view(), name="stats"),
     # Own apps
+    re_path(r"^tipps/", include(tipp_urls)),
     re_path(r"^events/", include(event_urls)),
     re_path(r"^dokumente/", include(document_urls)),
     re_path(r"", include(lecturer_urls)),
