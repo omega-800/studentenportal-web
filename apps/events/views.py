@@ -148,7 +148,7 @@ class EventCalendar(View):
 
         future, past = add_recurring_events(models.Event.objects.all())
 
-        for event in future + past:
+        for event in reversed(future + past):
             vevent = cal.add("vevent")
             vevent.add("summary").value = event.summary
             vevent.add("description").value = event.description
