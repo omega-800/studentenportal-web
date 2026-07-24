@@ -5,6 +5,7 @@
   - [ ] Tutorate: Wann, wo – Weiteres nach Bedarf
     - [ ] TODO: add recurring event for "Tutorate"
   - [x] Besseres Design der Events
+    - [ ] fix css oopsie in event list (thumbnail positioning)
   - [x] Recurring events
     - [ ] TODO: testing, show clearer distinction?
 
