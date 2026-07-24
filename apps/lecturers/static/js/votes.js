@@ -1,18 +1,20 @@
 $(document).ready(function() {
     $('.votebuttons div').click(function() {
-        if ($(this).hasClass('active')) {
+        if ($(this).hasClass('disabled')) {
+          return;
+        } else if ($(this).hasClass('active')) {
             var vote = 'remove';
         } else {
             var vote = $(this).hasClass('upvote') ? 'up' : 'down';
         }
 
         const url = $(this).parent().attr('data-url');
-        $.post(url, {'vote': vote}, quote_vote_callback);
+        $.post(url, {'vote': vote}, vote_callback);
     });
 });
 
-function quote_vote_callback(data) {
-    wrapper = $('.votebuttons[data-quote-pk=' + data.quote_pk + ']');
+function vote_callback(data) {
+    wrapper = $('.votebuttons[data-vote-elem-pk=' + data.vote_elem_pk + ']');
     if (data.vote == 'up') {
         wrapper.children('.downvote').removeClass('active');
         wrapper.children('.upvote').addClass('active');

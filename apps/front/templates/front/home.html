@@ -11,7 +11,6 @@
 {% block content %}
     <article class="welcome-message">
 
-
         {% if not user.is_authenticated %}
             <h3>Willkommen beim open\OST Studentenportal</h3>
         {% endif %}{% if user.is_authenticated %}
@@ -35,14 +34,27 @@
             {% endwith %}
         </section>
     {% endif %}
-    {% comment %}
     <section class="latest-news">
         <h1>News</h1>
 
         <article class="news">
+            <time class="date" datetime="2026-09-01">
+                <span class="day">01</span>
+                <span class="month">Sep</span>
+                <span class="year">2026</span>
+            </time>
+            <div class="summary">
+                <h3>Tipps & Tricks</h3>
+                <p>Das Register "Tipps" wurde hinzugefügt. Es können nun alle
+                ihre wichtigsten im Studium angesammelten Erkenntnisse mit
+                mitstudierenden teilen.</p>
+            </div>
+        </article>
+
+        <article class="news">
             <time class="date" datetime="2014-06-17">
                 <span class="day">17</span>
-                <span class="month">jun</span>
+                <span class="month">Jun</span>
                 <span class="year">2014</span>
             </time>
             <div class="summary">
@@ -55,7 +67,7 @@
         <article class="news">
             <time class="date" datetime="2013-02-17">
                 <span class="day">17</span>
-                <span class="month">feb</span>
+                <span class="month">Feb</span>
                 <span class="year">2013</span>
             </time>
             <div class="summary">
@@ -65,7 +77,6 @@
             </div>
         </article>
     </section>
-    {% endcomment %}
     <article class="contribute">
         <h1>Mitmachen</h1>
         <p>Das Studentenportal wurde von Studenten für Studenten entwickelt. Schau doch bei unserem <a href="https://github.com/studentenportal/web">Github Repo</a> rein!</p>

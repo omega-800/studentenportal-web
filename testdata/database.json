@@ -1,396 +1,408 @@
 [
-    {
-        "pk": 1,
-        "model": "documents.documentcategory",
-        "fields": {
-            "courses": [
-
-            ],
-            "lecturers": [
-                42
-            ],
-            "name": "Rech1",
-            "description": "Recherche für Anfänger"
-        }
-    },
-    {
-        "pk": 2,
-        "model": "documents.documentcategory",
-        "fields": {
-            "courses": [
-
-            ],
-            "lecturers": [
-                99
-            ],
-            "name": "Phil1",
-            "description": "Philatelie 1"
-        }
-    },
-    {
-        "pk": 1,
-        "model": "documents.documentdownload",
-        "fields": {
-            "timestamp": "2017-01-16T19:33:26.220",
-            "document": 1
-        }
-    },
-    {
-        "pk": 2,
-        "model": "documents.documentdownload",
-        "fields": {
-            "timestamp": "2017-01-16T20:13:21.348",
-            "document": 2
-        }
-    },
-    {
-        "pk": 42,
-        "model": "lecturers.lecturer",
-        "fields": {
-            "function": "Detektiv",
-            "first_name": "John",
-            "last_name": "Watson",
-            "office": "221B",
-            "title": "Dr.",
-            "abbreviation": "JOW",
-            "main_area": "Mord",
-            "subjects": "",
-            "department": "Wissenschaftliche Recherche",
-            "email": "jwatson@localhost"
-        }
-    },
-    {
-        "pk": 99,
-        "model": "lecturers.lecturer",
-        "fields": {
-            "function": "Antrieb",
-            "first_name": "Maria",
-            "last_name": "Musterfrau",
-            "office": "99.001A",
-            "title": "Frau Dr. Prof. Phil.",
-            "abbreviation": "MAM",
-            "main_area": "Fuelmanager",
-            "subjects": "",
-            "department": "Raketenwissenschaften",
-            "email": "mmusterfrau@localhost"
-        }
-    },
-    {
-        "pk": 1,
-        "model": "front.user",
-        "fields": {
-            "username": "user0",
-            "first_name": "0Firstname",
-            "last_name": "0Lastname (Admin)",
-            "is_active": true,
-            "is_superuser": true,
-            "is_staff": true,
-            "last_login": "2017-01-16T20:50:07.773",
-            "groups": [
-
-            ],
-            "user_permissions": [
-
-            ],
-            "password": "pbkdf2_sha256$12000$lsoo78F9ZTy4$bITXRF2m8eU73EXC8VgRoIlot6xWa41fFeI04kAHqdM=",
-            "email": "user0@localhost",
-            "date_joined": "2017-01-16T18:30:50.696"
-        }
-    },
-    {
-        "pk": 2,
-        "model": "front.user",
-        "fields": {
-            "username": "user1",
-            "first_name": "1Firstname",
-            "last_name": "1Surname",
-            "is_active": true,
-            "is_superuser": false,
-            "is_staff": false,
-            "last_login": "2017-01-16T20:31:38.673",
-            "groups": [
-
-            ],
-            "user_permissions": [
-
-            ],
-            "password": "pbkdf2_sha256$12000$n8Awpgtfun9n$jzPqHsFc1N8tOaT1ypJ1DRLdm5SBILyL2tUnyf/IIJ0=",
-            "email": "user1@localhost",
-            "date_joined": "2017-01-16T19:47:39"
-        }
-    },
-    {
-        "pk": 3,
-        "model": "front.user",
-        "fields": {
-            "username": "user2",
-            "first_name": "2Firstname",
-            "last_name": "2Surname",
-            "is_active": true,
-            "is_superuser": false,
-            "is_staff": false,
-            "last_login": "2020-01-01T19:47:39",
-            "groups": [
-
-            ],
-            "user_permissions": [
-
-            ],
-            "password": "pbkdf2_sha256$150000$z2UqSOjdVrGN$rlWCBLX2Q4aCEJ+okHGfCqbigZE+5wCnSEAkdkelztk=",
-            "email": "user2@localhost",
-            "date_joined": "2020-01-01T19:47:39"
-        }
-    },
-    {
-        "pk": 1,
-        "model": "documents.document",
-        "fields": {
-            "category": 1,
-            "upload_date": "2017-01-16T19:31:26.464",
-            "name": "Sherlock Holmes",
-            "license": 1,
-            "url": "https://www.gutenberg.org/ebooks/1661",
-            "dtype": 4,
-            "original_filename": "pg1661-images.epub",
-            "change_date": "2017-01-16T19:31:26.472",
-            "document": "documents/rech1/2017-01-16_19-31-26.epub",
-            "uploader": 1,
-            "public": true,
-            "description": "Upload from user0: .epub file."
-        }
-    },
-    {
-        "pk": 2,
-        "model": "documents.document",
-        "fields": {
-            "category": 1,
-            "upload_date": "2017-01-16T20:13:15.409",
-            "name": "Sherlock Holmes (PDF)",
-            "license": 5,
-            "url": "",
-            "dtype": 4,
-            "original_filename": "The Adventures of Sherlock Holmes.pdf",
-            "change_date": "2017-01-16T20:13:15.421",
-            "document": "documents/rech1/2017-01-16_20-13-15.pdf",
-            "uploader": 2,
-            "public": false,
-            "description": "Upload from user1: .pdf file."
-        }
-    },
-    {
-        "pk": 1,
-        "model": "documents.documentrating",
-        "fields": {
-            "rating": 4,
-            "document": 2,
-            "user": 1
-        }
-    },
-    {
-        "pk": 1,
-        "model": "events.event",
-        "fields": {
-            "picture": "event_pictures/2017/logo.png",
-            "description": "Tomorrow, there is a coding party!",
-            "end_date": "2017-01-18",
-            "author": 1,
-            "url": "https://secret.onion/",
-            "start_time": "21:30:00",
-            "summary": "Coding Party",
-            "end_time": "22:00:00",
-            "start_date": "2017-01-09",
-            "location": "Secret Location"
-        }
-    },
-    {
-        "pk": 2,
-        "model": "events.event",
-        "fields": {
-            "picture": "event_pictures/2042/cabcardthetare-thumb.jpg",
-            "description": "Live performance of The Coding Duo",
-            "end_date": null,
-            "author": 2,
-            "url": "https://studentenportal.ch/",
-            "start_time": "02:30:00",
-            "summary": "The Coding Duo",
-            "end_time": null,
-            "start_date": "2042-04-02",
-            "location": "The Internet"
-        }
-    },
-    {
-        "pk": 3,
-        "model": "events.event",
-        "fields": {
-            "picture": "",
-            "description": "Learn you node",
-            "end_date": null,
-            "author": 2,
-            "url": "",
-            "start_time": "21:30:00",
-            "summary": "Some boring event",
-            "end_time": null,
-            "start_date": "2019-09-13",
-            "location": ""
-        }
-    },
-    {
-        "pk": 1,
-        "model": "lecturers.lecturerrating",
-        "fields": {
-            "lecturer": 99,
-            "category": "d",
-            "user": 1,
-            "rating": 7
-        }
-    },
-    {
-        "pk": 2,
-        "model": "lecturers.lecturerrating",
-        "fields": {
-            "lecturer": 99,
-            "category": "m",
-            "user": 1,
-            "rating": 8
-        }
-    },
-    {
-        "pk": 3,
-        "model": "lecturers.lecturerrating",
-        "fields": {
-            "lecturer": 99,
-            "category": "f",
-            "user": 1,
-            "rating": 6
-        }
-    },
-    {
-        "pk": 4,
-        "model": "lecturers.lecturerrating",
-        "fields": {
-            "lecturer": 42,
-            "category": "f",
-            "user": 1,
-            "rating": 10
-        }
-    },
-    {
-        "pk": 5,
-        "model": "lecturers.lecturerrating",
-        "fields": {
-            "lecturer": 42,
-            "category": "m",
-            "user": 1,
-            "rating": 6
-        }
-    },
-    {
-        "pk": 6,
-        "model": "lecturers.lecturerrating",
-        "fields": {
-            "lecturer": 42,
-            "category": "d",
-            "user": 1,
-            "rating": 3
-        }
-    },
-    {
-        "pk": 7,
-        "model": "lecturers.lecturerrating",
-        "fields": {
-            "lecturer": 42,
-            "category": "d",
-            "user": 2,
-            "rating": 5
-        }
-    },
-    {
-        "pk": 8,
-        "model": "lecturers.lecturerrating",
-        "fields": {
-            "lecturer": 42,
-            "category": "m",
-            "user": 2,
-            "rating": 10
-        }
-    },
-    {
-        "pk": 9,
-        "model": "lecturers.lecturerrating",
-        "fields": {
-            "lecturer": 42,
-            "category": "f",
-            "user": 2,
-            "rating": 9
-        }
-    },
-    {
-        "pk": 1,
-        "model": "lecturers.quote",
-        "fields": {
-            "lecturer": 42,
-            "date": "2017-01-16T20:21:27.951",
-            "quote": "You know my methods, Watson.",
-            "comment": "Quotes Sherlock Holmes",
-            "author": 2
-        }
-    },
-    {
-        "pk": 2,
-        "model": "lecturers.quote",
-        "fields": {
-            "lecturer": 42,
-            "date": "2017-01-16T20:22:46.334",
-            "quote": "\"Excellent!\" I cried. \"Elementary,\",",
-            "comment": "said he.",
-            "author": 2
-        }
-    },
-    {
-        "pk": 3,
-        "model": "lecturers.quote",
-        "fields": {
-            "lecturer": 99,
-            "date": "2017-01-16T20:24:44.002",
-            "quote": "Ich bin durch den fiktiven Personalausweis und ebensolchen Reisepass zu bundesweiter Bekanntheit gelangt.",
-            "comment": "",
-            "author": 1
-        }
-    },
-    {
-        "pk": 1,
-        "model": "lecturers.quotevote",
-        "fields": {
-            "vote": true,
-            "quote": 1,
-            "user": 2
-        }
-    },
-    {
-        "pk": 2,
-        "model": "lecturers.quotevote",
-        "fields": {
-            "vote": true,
-            "quote": 2,
-            "user": 2
-        }
-    },
-    {
-        "pk": 4,
-        "model": "lecturers.quotevote",
-        "fields": {
-            "vote": true,
-            "quote": 2,
-            "user": 1
-        }
-    },
-    {
-        "pk": 12,
-        "model": "lecturers.quotevote",
-        "fields": {
-            "vote": true,
-            "quote": 3,
-            "user": 1
-        }
+  {
+    "pk": 1,
+    "model": "documents.documentcategory",
+    "fields": {
+      "courses": [],
+      "lecturers": [
+        42
+      ],
+      "name": "Rech1",
+      "description": "Recherche für Anfänger"
     }
+  },
+  {
+    "pk": 2,
+    "model": "documents.documentcategory",
+    "fields": {
+      "courses": [],
+      "lecturers": [
+        99
+      ],
+      "name": "Phil1",
+      "description": "Philatelie 1"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "documents.documentdownload",
+    "fields": {
+      "timestamp": "2017-01-16T19:33:26.220",
+      "document": 1
+    }
+  },
+  {
+    "pk": 2,
+    "model": "documents.documentdownload",
+    "fields": {
+      "timestamp": "2017-01-16T20:13:21.348",
+      "document": 2
+    }
+  },
+  {
+    "pk": 42,
+    "model": "lecturers.lecturer",
+    "fields": {
+      "function": "Detektiv",
+      "first_name": "John",
+      "last_name": "Watson",
+      "office": "221B",
+      "title": "Dr.",
+      "abbreviation": "JOW",
+      "main_area": "Mord",
+      "subjects": "",
+      "department": "Wissenschaftliche Recherche",
+      "email": "jwatson@localhost"
+    }
+  },
+  {
+    "pk": 99,
+    "model": "lecturers.lecturer",
+    "fields": {
+      "function": "Antrieb",
+      "first_name": "Maria",
+      "last_name": "Musterfrau",
+      "office": "99.001A",
+      "title": "Frau Dr. Prof. Phil.",
+      "abbreviation": "MAM",
+      "main_area": "Fuelmanager",
+      "subjects": "",
+      "department": "Raketenwissenschaften",
+      "email": "mmusterfrau@localhost"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "front.user",
+    "fields": {
+      "username": "user0",
+      "first_name": "0Firstname",
+      "last_name": "0Lastname (Admin)",
+      "is_active": true,
+      "is_superuser": true,
+      "is_staff": true,
+      "last_login": "2017-01-16T20:50:07.773",
+      "groups": [],
+      "user_permissions": [],
+      "password": "pbkdf2_sha256$12000$lsoo78F9ZTy4$bITXRF2m8eU73EXC8VgRoIlot6xWa41fFeI04kAHqdM=",
+      "email": "user0@localhost",
+      "date_joined": "2017-01-16T18:30:50.696"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "front.user",
+    "fields": {
+      "username": "user1",
+      "first_name": "1Firstname",
+      "last_name": "1Surname",
+      "is_active": true,
+      "is_superuser": false,
+      "is_staff": false,
+      "last_login": "2017-01-16T20:31:38.673",
+      "groups": [],
+      "user_permissions": [],
+      "password": "pbkdf2_sha256$12000$n8Awpgtfun9n$jzPqHsFc1N8tOaT1ypJ1DRLdm5SBILyL2tUnyf/IIJ0=",
+      "email": "user1@localhost",
+      "date_joined": "2017-01-16T19:47:39"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "front.user",
+    "fields": {
+      "username": "user2",
+      "first_name": "2Firstname",
+      "last_name": "2Surname",
+      "is_active": true,
+      "is_superuser": false,
+      "is_staff": false,
+      "last_login": "2020-01-01T19:47:39",
+      "groups": [],
+      "user_permissions": [],
+      "password": "pbkdf2_sha256$150000$z2UqSOjdVrGN$rlWCBLX2Q4aCEJ+okHGfCqbigZE+5wCnSEAkdkelztk=",
+      "email": "user2@localhost",
+      "date_joined": "2020-01-01T19:47:39"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "documents.document",
+    "fields": {
+      "category": 1,
+      "upload_date": "2017-01-16T19:31:26.464",
+      "name": "Sherlock Holmes",
+      "license": 1,
+      "url": "https://www.gutenberg.org/ebooks/1661",
+      "dtype": 4,
+      "original_filename": "pg1661-images.epub",
+      "change_date": "2017-01-16T19:31:26.472",
+      "document": "documents/rech1/2017-01-16_19-31-26.epub",
+      "uploader": 1,
+      "public": true,
+      "description": "Upload from user0: .epub file."
+    }
+  },
+  {
+    "pk": 2,
+    "model": "documents.document",
+    "fields": {
+      "category": 1,
+      "upload_date": "2017-01-16T20:13:15.409",
+      "name": "Sherlock Holmes (PDF)",
+      "license": 5,
+      "url": "",
+      "dtype": 4,
+      "original_filename": "The Adventures of Sherlock Holmes.pdf",
+      "change_date": "2017-01-16T20:13:15.421",
+      "document": "documents/rech1/2017-01-16_20-13-15.pdf",
+      "uploader": 2,
+      "public": false,
+      "description": "Upload from user1: .pdf file."
+    }
+  },
+  {
+    "pk": 1,
+    "model": "documents.documentrating",
+    "fields": {
+      "rating": 4,
+      "document": 2,
+      "user": 1
+    }
+  },
+  {
+    "pk": 1,
+    "model": "events.event",
+    "fields": {
+      "picture": "event_pictures/2017/logo.png",
+      "description": "Tomorrow, there is a coding party!",
+      "end_date": "2017-01-18",
+      "author": 1,
+      "url": "https://secret.onion/",
+      "start_time": "21:30:00",
+      "summary": "Coding Party",
+      "end_time": "22:00:00",
+      "start_date": "2017-01-09",
+      "location": "Secret Location"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "events.event",
+    "fields": {
+      "picture": "event_pictures/2042/cabcardthetare-thumb.jpg",
+      "description": "Live performance of The Coding Duo",
+      "end_date": null,
+      "author": 2,
+      "url": "https://studentenportal.ch/",
+      "start_time": "02:30:00",
+      "summary": "The Coding Duo",
+      "end_time": null,
+      "start_date": "2042-04-02",
+      "location": "The Internet"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "events.event",
+    "fields": {
+      "picture": "",
+      "description": "Learn you node",
+      "end_date": null,
+      "author": 2,
+      "url": "",
+      "start_time": "21:30:00",
+      "summary": "Some boring event",
+      "end_time": null,
+      "start_date": "2019-09-13",
+      "location": ""
+    }
+  },
+  {
+    "pk": 1,
+    "model": "lecturers.lecturerrating",
+    "fields": {
+      "lecturer": 99,
+      "category": "d",
+      "user": 1,
+      "rating": 7
+    }
+  },
+  {
+    "pk": 2,
+    "model": "lecturers.lecturerrating",
+    "fields": {
+      "lecturer": 99,
+      "category": "m",
+      "user": 1,
+      "rating": 8
+    }
+  },
+  {
+    "pk": 3,
+    "model": "lecturers.lecturerrating",
+    "fields": {
+      "lecturer": 99,
+      "category": "f",
+      "user": 1,
+      "rating": 6
+    }
+  },
+  {
+    "pk": 4,
+    "model": "lecturers.lecturerrating",
+    "fields": {
+      "lecturer": 42,
+      "category": "f",
+      "user": 1,
+      "rating": 10
+    }
+  },
+  {
+    "pk": 5,
+    "model": "lecturers.lecturerrating",
+    "fields": {
+      "lecturer": 42,
+      "category": "m",
+      "user": 1,
+      "rating": 6
+    }
+  },
+  {
+    "pk": 6,
+    "model": "lecturers.lecturerrating",
+    "fields": {
+      "lecturer": 42,
+      "category": "d",
+      "user": 1,
+      "rating": 3
+    }
+  },
+  {
+    "pk": 7,
+    "model": "lecturers.lecturerrating",
+    "fields": {
+      "lecturer": 42,
+      "category": "d",
+      "user": 2,
+      "rating": 5
+    }
+  },
+  {
+    "pk": 8,
+    "model": "lecturers.lecturerrating",
+    "fields": {
+      "lecturer": 42,
+      "category": "m",
+      "user": 2,
+      "rating": 10
+    }
+  },
+  {
+    "pk": 9,
+    "model": "lecturers.lecturerrating",
+    "fields": {
+      "lecturer": 42,
+      "category": "f",
+      "user": 2,
+      "rating": 9
+    }
+  },
+  {
+    "pk": 1,
+    "model": "lecturers.quote",
+    "fields": {
+      "lecturer": 42,
+      "date": "2017-01-16T20:21:27.951",
+      "quote": "You know my methods, Watson.",
+      "comment": "Quotes Sherlock Holmes",
+      "author": 2
+    }
+  },
+  {
+    "pk": 2,
+    "model": "lecturers.quote",
+    "fields": {
+      "lecturer": 42,
+      "date": "2017-01-16T20:22:46.334",
+      "quote": "\"Excellent!\" I cried. \"Elementary,\",",
+      "comment": "said he.",
+      "author": 2
+    }
+  },
+  {
+    "pk": 3,
+    "model": "lecturers.quote",
+    "fields": {
+      "lecturer": 99,
+      "date": "2017-01-16T20:24:44.002",
+      "quote": "Ich bin durch den fiktiven Personalausweis und ebensolchen Reisepass zu bundesweiter Bekanntheit gelangt.",
+      "comment": "",
+      "author": 1
+    }
+  },
+  {
+    "pk": 1,
+    "model": "lecturers.quotevote",
+    "fields": {
+      "vote": true,
+      "quote": 1,
+      "user": 2
+    }
+  },
+  {
+    "pk": 2,
+    "model": "lecturers.quotevote",
+    "fields": {
+      "vote": true,
+      "quote": 2,
+      "user": 2
+    }
+  },
+  {
+    "pk": 4,
+    "model": "lecturers.quotevote",
+    "fields": {
+      "vote": true,
+      "quote": 2,
+      "user": 1
+    }
+  },
+  {
+    "pk": 12,
+    "model": "lecturers.quotevote",
+    "fields": {
+      "vote": true,
+      "quote": 3,
+      "user": 1
+    }
+  },
+  {
+    "pk": 1,
+    "model": "tipps.tipp",
+    "fields": {
+      "description": "Wer regelmässi isst, verliert den Fokus",
+      "author": 2,
+      "summary": "Kaffee als Grundnahrungsmittel",
+      "date": "2015-11-15"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "tipps.tippvote",
+    "fields": {
+      "vote": true,
+      "tipp": 1,
+      "user": 2
+    }
+  },
+  {
+    "pk": 2,
+    "model": "tipps.tippvote",
+    "fields": {
+      "vote": true,
+      "tipp": 1,
+      "user": 1
+    }
+  }
 ]

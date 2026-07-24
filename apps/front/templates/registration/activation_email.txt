@@ -11,5 +11,5 @@ https://{{site.domain}}/accounts/activate/{{ activation_key }}
 Du hast {{ expiration_days }} Tage Zeit um dies zu tun, ansonsten
 wird der Account gesperrt und du hast verloren.
 
-Mit mehr oder weniger freundlichen Grüssen,
+Cheers,
 Das Studentenportal

@@ -1,10 +1,12 @@
+import copy
 import datetime
 from urllib.parse import urlsplit, urlunsplit
 
 import vobject
 from dateutil.relativedelta import relativedelta
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import (HttpResponse, HttpResponseForbidden,
+                         HttpResponseRedirect)
 from django.urls import reverse
 from django.views.generic import TemplateView, View
 from django.views.generic.detail import DetailView
@@ -23,22 +25,17 @@ class EventAdd(LoginRequiredMixin, CreateView):
     form_class = forms.EventForm
 
     def form_valid(self, form):
-        """Override the form_valid method of the ModelFormMixin to insert
-        value of author field. To do this, the form's save() method is
-        called with commit=False to be able to edit the new object before
-        actually saving it."""
         self.object = form.save(commit=False)
         self.object.author = self.request.user
         self.object.save()
-        return super().form_valid(form)
-
-    def get_success_url(self):
         messages.add_message(
             self.request,
             messages.SUCCESS,
             'Event "%s" wurde erfolgreich erstellt.' % self.object.summary,
         )
-        return reverse("events:event_detail", args=[self.object.pk])
+        return HttpResponseRedirect(
+            reverse("events:event_detail", args=[self.object.pk])
+        )
 
 
 class EventEdit(LoginRequiredMixin, UpdateView):
@@ -75,19 +72,66 @@ class EventDelete(LoginRequiredMixin, DeleteView):
         return reverse("events:event_list")
 
 
+def repeat_dates(start_date, interval_days, end_date):
+    dates = []
+    d = start_date
+    while d <= end_date:
+        dates.append(d)
+        d = d + datetime.timedelta(days=interval_days)
+    return dates
+
+
+def add_recurring_events(events):
+    future = []
+    past = []
+    for e in events:
+        if e.start_date > datetime.date.today():
+            future.append(e)
+        else:
+            past.append(e)
+        if (
+            e.repeats
+            and e.repeat_days is not None
+            and e.repeat_days > 0
+            and e.repeat_ends is not None
+        ):
+            dates = repeat_dates(e.start_date, e.repeat_days, e.repeat_ends)
+            for date in dates[1:]:
+                new_e = copy.copy(e)
+                new_e.start_date = date
+                new_e.end_date = (
+                    date + (e.start_date - e.end_date)
+                    if e.end_date is not None
+                    else None
+                )
+                if date > datetime.date.today():
+                    future.append(new_e)
+                else:
+                    past.append(new_e)
+    return sorted(
+        future, key=lambda e: (e.start_date, e.start_time or datetime.time.min)
+    ), sorted(
+        past,
+        key=lambda e: (-e.start_date.toordinal(), e.start_time or datetime.time.min),
+    )
+
+
 class EventList(TemplateView):
     template_name = "events/event_list.html"
 
     def get_context_data(self, **kwargs):
         model = models.Event
         context = super().get_context_data(**kwargs)
-        context["events_future"] = model.objects.filter(
-            start_date__gte=datetime.date.today()
-        ).order_by("start_date", "start_time")
-        context["events_past"] = model.objects.filter(
-            start_date__lt=datetime.date.today(),
-            start_date__gt=datetime.date.today() - relativedelta(years=2),
-        ).order_by("-start_date", "start_time")
+
+        future, past = add_recurring_events(model.objects.all())
+
+        context["events_future"] = future
+        # TODO: let user input the timeframe
+        context["events_past"] = [
+            e
+            for e in past
+            if e.start_date > datetime.date.today() - relativedelta(years=10)
+        ]
         http_url = self.request.build_absolute_uri(reverse("events:event_calendar"))
         context["current_year"] = datetime.date.today().year
         context["webcal_url"] = urlunsplit(urlsplit(http_url)._replace(scheme="webcal"))
@@ -101,7 +145,10 @@ class EventCalendar(View):
         cal = vobject.iCalendar()
         cal.add("x-wr-calname").value = "Studentenportal Events"
         cal.add("x-wr-timezone").value = "Europe/Zurich"
-        for event in models.Event.objects.all():
+
+        future, past = add_recurring_events(models.Event.objects.all())
+
+        for event in future + past:
             vevent = cal.add("vevent")
             vevent.add("summary").value = event.summary
             vevent.add("description").value = event.description

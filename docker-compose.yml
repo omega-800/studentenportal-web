@@ -6,25 +6,23 @@
 #  ||
 # postgres ----- postgres-data:/var/lib/postgresql/data
 #
-version: '3.5'
 services:
   postgres_dev:
-    image: postgres:12
+    image: postgres:13
     restart: always
     environment:
       POSTGRES_PASSWORD: "k9F1bbHiW4o9By1A6tvL"
       POSTGRES_USER: "studentenportal"
     networks:
-        - studentenportal-dev
-
+      - studentenportal-dev
   studentenportal_dev:
     image: studentenportal/dev:latest
     build:
       context: .
       dockerfile: deploy/dev/Dockerfile
       args:
-          - UID=${UID-1000}
-          - GID=${GID-1000}
+        - UID=${UID-1000}
+        - GID=${GID-1000}
     volumes:
       - ./:/srv/www/studentenportal
     ports:
@@ -38,6 +36,5 @@ services:
       - studentenportal-dev
     depends_on:
       - postgres_dev
-
 networks:
   studentenportal-dev:

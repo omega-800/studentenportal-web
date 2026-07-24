@@ -32,6 +32,23 @@ class Event(models.Model):
     end_time = models.TimeField(
         "Endzeit", null=True, blank=True, help_text="Format: hh:mm"
     )
+
+    repeats = models.BooleanField(
+        "Wiederholend",
+        null=False,
+        default=False,
+        help_text="Ob sich das Event wiederholt",
+    )
+    repeat_days = models.PositiveSmallIntegerField(
+        "Tage",
+        null=True,
+        blank=True,
+        help_text="Nach wievielen Tagen sich das Event wiederholt",
+    )
+    repeat_ends = models.DateField(
+        "Wiederholungsende", null=True, blank=True, help_text="Format: dd.mm.YYYY"
+    )
+
     location = models.CharField(
         "Ort",
         max_length=80,

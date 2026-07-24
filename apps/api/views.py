@@ -10,7 +10,8 @@ from rest_framework.views import APIView
 
 from apps.lecturers import models
 
-from . import permissions as custom_permissions, serializers
+from . import permissions as custom_permissions
+from . import serializers
 
 
 @api_view(("GET",))
@@ -95,7 +96,7 @@ class QuoteVote(APIView):
             vote_obj.save()
 
         data = {
-            "quote_pk": quote.pk,
+            "vote_elem_pk": quote.pk,
             "vote": vote,
             "vote_count": quote.QuoteVote.count(),
             "vote_sum": quote.vote_sum(),

@@ -15,7 +15,7 @@
     {{ block.super }}
     {% compress js %}
         <script src="{{ STATIC_URL }}js/blazy.js"></script>
-        <script src="{{ STATIC_URL }}js/quote_votes.js"></script>
+        <script src="{{ STATIC_URL }}js/votes.js"></script>
         <script>
             (function() {
                 var bLazy = new Blazy();
@@ -47,28 +47,31 @@
 
         {% for quote in quotes %}
             <article class="quote {% if quote.author_id == user.pk %}quote-edit{% endif %}">
-            {% if quote.author_id == user.pk %}
-                <div class="edit">
-                    {% include 'lecturers/blocks/quote_delete_button.html' with small_button=1 %}
-                </div>
-            {% endif %}
-            {% include 'lecturers/blocks/vote_buttons.html' %}
-            <div class="quote-wrapper">
-                <blockquote cite="{% url 'lecturers:lecturer_detail' quote.lecturer_id %}">
-                    <p>{{ quote.quote|linebreaksbr }}</p>
-                </blockquote>
-                {% if quote.comment %}
-                <p class="comment">{{ quote.comment|linebreaksbr }}</p>
+                {% if quote.author_id == user.pk %}
+                    <div class="edit">
+                        {% url 'lecturers:quote_delete' quote.pk as delete_url %}
+                        {% include 'lecturers/blocks/delete_button.html' with small_button=1 delete_url=delete_url %}
+                    </div>
                 {% endif %}
-                <div class="citation">
-                    von <a href="{% url 'lecturers:lecturer_detail' quote.lecturer_id %}">{{ quote.lecturer.name }}</a>{% if quote.date_available %} - {{ quote.date|date:"d. M.Y" }}{% endif %}
+                {% url 'api:quote_vote' quote.pk as vote_url %}
+                {% include 'lecturers/blocks/vote_buttons.html' with vote_elem=quote vote_url=vote_url %}
+
+                <div class="quote-wrapper">
+                    <blockquote cite="{% url 'lecturers:lecturer_detail' quote.lecturer_id %}">
+                        <p>{{ quote.quote|linebreaksbr }}</p>
+                    </blockquote>
+                    {% if quote.comment %}
+                    <p class="comment">{{ quote.comment|linebreaksbr }}</p>
+                    {% endif %}
+                    <div class="citation">
+                        von <a href="{% url 'lecturers:lecturer_detail' quote.lecturer_id %}">{{ quote.lecturer.name }}</a>{% if quote.date_available %} - {{ quote.date|date:"d. M.Y" }}{% endif %}
+                    </div>
                 </div>
-            </div>
-            {% if quote.lecturer.photo %}
-            <div class="thumbnail">
-                <img class="b-lazy" src="{{ STATIC_URL }}img/professor.png" data-src="{% thumbnail quote.lecturer.photo 75x100 crop %}" />
-            </div>
-            {% endif %}
+                {% if quote.lecturer.photo %}
+                <div class="thumbnail">
+                    <img class="b-lazy" src="{{ STATIC_URL }}img/professor.png" data-src="{% thumbnail quote.lecturer.photo 75x100 crop %}" />
+                </div>
+                {% endif %}
             </article>
         {% endfor %}
 
