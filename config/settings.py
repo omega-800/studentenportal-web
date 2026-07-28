@@ -47,6 +47,10 @@ SITE_ID = 1
 CSRF_COOKIE_HTTPONLY = True
 if not DEBUG:
     ALLOWED_HOSTS = ["studentenportal.ch", "www.studentenportal.ch"]
+    CSRF_TRUSTED_ORIGINS = [
+        "https://studentenportal.ch",
+        "https://www.studentenportal.ch",
+    ]
     CSRF_COOKIE_SECURE = True
     CSRF_COOKIE_SAMESITE = "Strict"
     SESSION_COOKIE_SECURE = True
@@ -57,6 +61,8 @@ USE_I18N = True
 
 # migration to 5.0
 USE_TZ = False
+# migration to 6.0
+FORMS_URLFIELD_ASSUME_HTTPS = True
 
 DATABASES = {
     "default": {
