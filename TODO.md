@@ -27,21 +27,26 @@
 # technical
 
 - [ ] updates/upgrades
-  - [ ] pg 12.2 -> 13 !!1!1
-    - [ ] prod: export/backup data, then update, then re-import
-      - docker exec -i web_postgres_1 pg_dump -U studentenportal studentenportal > dump.sql
-      - cp postgres_data-13 postgres_data && chown -R 999:999 postgres_data && echo [] > testdata/database.json
+  - [x] pg 12.2 -> 13 !!1!1
   - [x] test if gunicorn 26.0.0 works in prod
   - [x] server: ubuntu 18.04 -> 26.04
     - [x] ubuntu is a pain in my assholes
-    - [o] secure sshd config on new VM
-- [ ] docker image
+  - [ ] secure sshd config on new VM (ansible)
+- [x] docker image
   - [x] update python:3.10 (+ remove unnecessary deps?)
   - [x] remove base image completely from web
-  - [ ] remove/archive base image (github+dockerhub)
+  - [x] remove/archive base image (github+dockerhub)
 - [ ] login problem
   - [ ] add warning message at login that many accounts were deleted; write email
     to team@studentenportal.ch if active account was deleted
 - [o] lots of duplicated code between quotes & tipps due to @omega-800 's skill issues
 - [ ] svgs instead of fonts for icons
-- [ ] i want a cool tux motd on server pwetty pwease
+- [ ] i want a cool tux motd on server pwetty pwease (ansible)
+- [ ] add robots.txt
+- [ ] save email addresses in db in lowercase https://github.com/studentenportal/web/issues/678#issuecomment-5083145263
+  - [ ] also migrate the addresses already present
+
+## yeah...
+
+remote: GitHub found 47 vulnerabilities on studentenportal/web's default branch (4 critical, 16 high, 27 moderate). To find out more, visit:
+remote: https://github.com/studentenportal/web/security/dependabot
