@@ -117,6 +117,7 @@ $color-search-background: #E1E5E8;
     .summary {
         margin-left: 4em;
         float: left;
+        width: calc(100% - 4em);
     }
 }
 
@@ -181,9 +182,6 @@ $color-vote: map-get($color-voting, "vote");
 }
 
 /* ===EVENTS=== */
-.events {
-}
-
 .event {
     @extend %box;
     @extend %list-card;

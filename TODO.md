@@ -1,11 +1,13 @@
-# goals
+# TODO
+
+## goals
 
 - [ ] Events
 
   - [ ] Tutorate: Wann, wo – Weiteres nach Bedarf
     - [ ] TODO: add recurring event for "Tutorate"
   - [x] Besseres Design der Events
-    - [ ] fix css oopsie in event list (thumbnail positioning)
+    - [x] fix css oopsie in event list (thumbnail positioning)
   - [x] Recurring events
     - [ ] TODO: testing, show clearer distinction?
 
@@ -24,7 +26,17 @@
 
 - [ ] Wünsche/Feedbackformular
 
-# technical
+- [ ] Zitat/Meme der Woche, Studentenzitate (Vorschlag Jasmin)
+
+- [ ] save email addresses in db in lowercase https://github.com/studentenportal/web/issues/678#issuecomment-5083145263
+
+  - [ ] also migrate the addresses already present
+
+- [ ] login problem
+
+  - [ ] add "send verification mail again" button
+
+## technical
 
 - [ ] updates/upgrades
   - [x] pg 12.2 -> 13 !!1!1
@@ -32,21 +44,17 @@
   - [x] server: ubuntu 18.04 -> 26.04
     - [x] ubuntu is a pain in my assholes
   - [ ] secure sshd config on new VM (ansible)
+  - [ ] update pg to 18/newest
 - [x] docker image
   - [x] update python:3.10 (+ remove unnecessary deps?)
   - [x] remove base image completely from web
   - [x] remove/archive base image (github+dockerhub)
-- [ ] login problem
-  - [ ] add warning message at login that many accounts were deleted; write email
-    to team@studentenportal.ch if active account was deleted
 - [o] lots of duplicated code between quotes & tipps due to @omega-800 's skill issues
 - [ ] svgs instead of fonts for icons
-- [ ] i want a cool tux motd on server pwetty pwease (ansible)
 - [ ] add robots.txt
-- [ ] save email addresses in db in lowercase https://github.com/studentenportal/web/issues/678#issuecomment-5083145263
-  - [ ] also migrate the addresses already present
 
 ## yeah...
 
-remote: GitHub found 47 vulnerabilities on studentenportal/web's default branch (4 critical, 16 high, 27 moderate). To find out more, visit:
-remote: https://github.com/studentenportal/web/security/dependabot
+- [ ] remote: GitHub found 47 vulnerabilities on studentenportal/web's default branch (4 critical, 16 high, 27 moderate). To find out more, visit:
+  remote: https://github.com/studentenportal/web/security/dependabot
+- [ ] Jul 27 00:03:32 studentenportal systemd\[1\]: Failed to start duply.service - Duply backup.
