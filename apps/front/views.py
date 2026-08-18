@@ -71,9 +71,18 @@ class ResendActivation(FormView):
     def form_valid(self, form):
         email = form.cleaned_data["email"]
         site = get_current_site(self.request)
-        RegistrationProfile.objects.resend_activation_mail(
-            email, site, self.request
-        )
+        try:
+            profile = RegistrationProfile.objects.get(user__email__iexact=email)
+        except RegistrationProfile.DoesNotExist:
+            # Don't reveal whether the email exists
+            return super().form_valid(form)
+
+        if profile.activated:
+            return super().form_valid(form)
+
+        # Always regenerate the key and resend — even if expired
+        profile.create_new_activation_key()
+        profile.send_activation_email(site, self.request)
         return super().form_valid(form)
 
 
