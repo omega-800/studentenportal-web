@@ -43,6 +43,54 @@
                 $('#id_start_time, #id_end_time').pickatime({
                     format: 'H:i'
                 });
+
+                // Dynamic repeat description
+                var weekdays = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
+                var ordinals = ['', '1.', '2.', '3.', '4.', '5.'];
+
+                function updateRepeatHint() {
+                    var unit = $('#id_repeat_unit').val();
+                    var every = parseInt($('#id_repeat_every').val()) || 1;
+                    var startVal = $('#id_start_date').val();
+                    var $hint = $('#repeat-hint');
+
+                    if (!unit || !startVal) {
+                        $hint.hide();
+                        return;
+                    }
+
+                    // Parse dd.mm.yyyy
+                    var parts = startVal.split('.');
+                    if (parts.length !== 3) { $hint.hide(); return; }
+                    var startDate = new Date(parts[2], parts[1] - 1, parts[0]);
+                    if (isNaN(startDate)) { $hint.hide(); return; }
+
+                    var msg = '';
+                    if (unit === 'day') {
+                        msg = every === 1 ? 'Wiederholt sich täglich' : 'Wiederholt sich alle ' + every + ' Tage';
+                    } else if (unit === 'week') {
+                        var dayName = weekdays[startDate.getDay() === 0 ? 6 : startDate.getDay() - 1];
+                        msg = every === 1 ? 'Wiederholt sich jeden ' + dayName : 'Wiederholt sich alle ' + every + ' Wochen am ' + dayName;
+                    } else if (unit === 'month') {
+                        var dayName = weekdays[startDate.getDay() === 0 ? 6 : startDate.getDay() - 1];
+                        var nth = Math.floor((startDate.getDate() - 1) / 7) + 1;
+                        msg = 'Wiederholt sich am ' + ordinals[nth] + ' ' + dayName + ' jedes';
+                        msg += every === 1 ? ' Monats' : ' ' + every + '. Monats';
+                    } else if (unit === 'year') {
+                        var months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+                        var dayName = weekdays[startDate.getDay() === 0 ? 6 : startDate.getDay() - 1];
+                        var nth = Math.floor((startDate.getDate() - 1) / 7) + 1;
+                        msg = 'Wiederholt sich am ' + ordinals[nth] + ' ' + dayName + ' im ' + months[startDate.getMonth()];
+                        msg += every === 1 ? ' jedes Jahr' : ' alle ' + every + ' Jahre';
+                    }
+
+                    $hint.text(msg).show();
+                }
+
+                // Insert hint element after repeat_unit field
+                $('#id_repeat_unit').closest('.control-group').after('<p id="repeat-hint" class="help-block" style="display:none; font-style:italic;"></p>');
+                $('#id_repeat_unit, #id_repeat_every, #id_start_date').on('change', updateRepeatHint);
+                updateRepeatHint();
             });
         </script>
     {% endcompress %}
