@@ -33,17 +33,32 @@ class Event(models.Model):
         "Endzeit", null=True, blank=True, help_text="Format: hh:mm"
     )
 
+    REPEAT_UNIT_CHOICES = [
+        ("day", "Tage"),
+        ("week", "Wochen"),
+        ("month", "Monate"),
+        ("year", "Jahre"),
+    ]
+
     repeats = models.BooleanField(
         "Wiederholend",
         null=False,
         default=False,
         help_text="Ob sich das Event wiederholt",
     )
-    repeat_days = models.PositiveSmallIntegerField(
-        "Tage",
+    repeat_every = models.PositiveSmallIntegerField(
+        "Alle",
         null=True,
         blank=True,
-        help_text="Nach wievielen Tagen sich das Event wiederholt",
+        help_text="Intervall der Wiederholung (z.B. 2 für alle 2 Wochen)",
+    )
+    repeat_unit = models.CharField(
+        "Einheit",
+        max_length=5,
+        null=True,
+        blank=True,
+        choices=REPEAT_UNIT_CHOICES,
+        help_text="Einheit der Wiederholung",
     )
     repeat_ends = models.DateField(
         "Wiederholungsende", null=True, blank=True, help_text="Format: dd.mm.YYYY"

@@ -71,12 +71,80 @@ class EventDelete(LoginRequiredMixin, DeleteView):
         return reverse("events:event_list")
 
 
-def repeat_dates(start_date, interval_days, end_date):
+def _nth_weekday_of_month(year, month, weekday, n):
+    """Find the nth occurrence of a weekday in a given month.
+
+    Args:
+        year, month: Target month.
+        weekday: 0=Monday ... 6=Sunday.
+        n: 1-based occurrence (1st, 2nd, 3rd, ...).
+
+    Returns:
+        A date, or None if the nth occurrence doesn't exist.
+    """
+    import calendar
+
+    first_day, days_in_month = calendar.monthrange(year, month)
+    # Find the first occurrence of the weekday
+    first_occurrence = 1 + (weekday - first_day) % 7
+    target_day = first_occurrence + (n - 1) * 7
+    if target_day > days_in_month:
+        return None
+    return datetime.date(year, month, target_day)
+
+
+def repeat_dates(start_date, repeat_every, repeat_unit, end_date):
+    """Generate recurring dates from start_date to end_date.
+
+    For 'month' and 'year' units, uses weekday-of-month logic
+    (e.g., 2nd Tuesday) rather than day-of-month.
+    """
     dates = []
-    d = start_date
-    while d <= end_date:
-        dates.append(d)
-        d = d + datetime.timedelta(days=interval_days)
+    if repeat_unit == "day":
+        d = start_date
+        while d <= end_date:
+            dates.append(d)
+            d += datetime.timedelta(days=repeat_every)
+    elif repeat_unit == "week":
+        d = start_date
+        while d <= end_date:
+            dates.append(d)
+            d += datetime.timedelta(weeks=repeat_every)
+    elif repeat_unit == "month":
+        weekday = start_date.weekday()
+        n = (start_date.day - 1) // 7 + 1  # which occurrence (1st, 2nd, ...)
+        if start_date <= end_date:
+            dates.append(start_date)
+        month_offset = repeat_every
+        while True:
+            total_months = start_date.year * 12 + (start_date.month - 1) + month_offset
+            y, m = divmod(total_months, 12)
+            m += 1
+            candidate = _nth_weekday_of_month(y, m, weekday, n)
+            if candidate is None:
+                month_offset += repeat_every
+                continue
+            if candidate > end_date:
+                break
+            dates.append(candidate)
+            month_offset += repeat_every
+    elif repeat_unit == "year":
+        weekday = start_date.weekday()
+        n = (start_date.day - 1) // 7 + 1
+        target_month = start_date.month
+        if start_date <= end_date:
+            dates.append(start_date)
+        year_offset = repeat_every
+        while True:
+            y = start_date.year + year_offset
+            candidate = _nth_weekday_of_month(y, target_month, weekday, n)
+            if candidate is None:
+                year_offset += repeat_every
+                continue
+            if candidate > end_date:
+                break
+            dates.append(candidate)
+            year_offset += repeat_every
     return dates
 
 
@@ -90,11 +158,14 @@ def add_recurring_events(events):
             past.append(e)
         if (
             e.repeats
-            and e.repeat_days is not None
-            and e.repeat_days > 0
+            and e.repeat_every is not None
+            and e.repeat_every > 0
+            and e.repeat_unit is not None
             and e.repeat_ends is not None
         ):
-            dates = repeat_dates(e.start_date, e.repeat_days, e.repeat_ends)
+            dates = repeat_dates(
+                e.start_date, e.repeat_every, e.repeat_unit, e.repeat_ends
+            )
             for date in dates[1:]:
                 new_e = copy.copy(e)
                 new_e.start_date = date

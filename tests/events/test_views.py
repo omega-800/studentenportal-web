@@ -132,7 +132,8 @@ def test_recurring_event_list(client, transactional_db):
         author=user,
         start_date=future_date,
         repeats=True,
-        repeat_days=7,
+        repeat_every=1,
+        repeat_unit="week",
         repeat_ends=future_date + dt.timedelta(days=21),
     )
     response = client.get("/events/")
@@ -154,7 +155,8 @@ def test_recurring_event_shows_label(client, transactional_db):
         author=user,
         start_date=future_date,
         repeats=True,
-        repeat_days=7,
+        repeat_every=1,
+        repeat_unit="week",
         repeat_ends=future_date + dt.timedelta(days=14),
     )
     response = client.get("/events/")

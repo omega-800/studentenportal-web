@@ -11,11 +11,12 @@ class EventForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         if cleaned_data.get("repeats") and (
-            cleaned_data.get("repeat_days") is None
-            or cleaned_data.get("repeat_days") <= 0
+            cleaned_data.get("repeat_every") is None
+            or cleaned_data.get("repeat_every") <= 0
+            or cleaned_data.get("repeat_unit") is None
             or cleaned_data.get("repeat_ends") is None
         ):
             raise forms.ValidationError(
-                'Für wiederholende Events müssen "Tage" (>0) und "Wiederholungsende" angegeben werden.'
+                'Für wiederholende Events müssen "Alle" (>0), "Einheit" und "Wiederholungsende" angegeben werden.'
             )
         return cleaned_data
