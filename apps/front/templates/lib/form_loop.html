@@ -13,7 +13,7 @@
             </label>
             {{ field }}
             {{ field.errors }}
-            {% if field.help_text %}<p class="help-block">{{ field.help_text }}</p>{% endif %}
+            {% if field.help_text %}<p class="help-block"><label for="id_{{ field.html_name }}">{{ field.help_text }}</label></p>{% endif %}
         </div>
     {% endfor %}
 </fieldset>
