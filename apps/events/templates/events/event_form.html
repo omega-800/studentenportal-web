@@ -87,8 +87,8 @@
                     $hint.text(msg).show();
                 }
 
-                // Insert hint element after repeat_unit field
-                $('#id_repeat_unit').closest('.control-group').after('<p id="repeat-hint" class="help-block" style="display:none; font-style:italic;"></p>');
+                // Insert hint element inside the repeat_unit control-group, after all existing content
+                $('#id_repeat_unit').closest('.control-group').append('<p id="repeat-hint" class="help-block" style="display:none; font-style:italic; clear:both;"></p>');
                 $('#id_repeat_unit, #id_repeat_every, #id_start_date').on('change', updateRepeatHint);
                 updateRepeatHint();
             });
