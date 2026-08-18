@@ -186,11 +186,11 @@
             {% if quote.author_id == user.pk %}
             <div class="edit">
               {% url 'lecturers:quote_delete' quote.pk as delete_url %}
-              {% include 'lecturers/blocks/delete_button.html' with small_button=1 delete_url=delete_url %}
+              {% include 'front/blocks/delete_button.html' with small_button=1 delete_url=delete_url %}
             </div>
             {% endif %}
             {% url 'api:quote_vote' quote.pk as vote_url %}
-            {% include 'lecturers/blocks/vote_buttons.html' with vote_elem=quote vote_url=vote_url %}
+            {% include 'front/blocks/vote_buttons.html' with vote_elem=quote vote_url=vote_url %}
             <div class="quote-wrapper">
                 <blockquote cite="{% url 'lecturers:lecturer_detail' quote.lecturer_id %}">
                     <p>{{ quote.quote }}</p>

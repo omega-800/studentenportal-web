@@ -34,18 +34,18 @@
 
     {% if object_list %}
 
-    {% include 'lecturers/blocks/pagination.html' %}
+    {% include 'front/blocks/pagination.html' %}
 
     {% for tipp in object_list %}
         <article class="quote {% if tipp.author_id == user.pk %}quote-edit{% endif %}">
           {% if tipp.author_id == user.pk %}
               <div class="edit">
                   {% url 'tipps:tipp_delete' tipp.pk as delete_url %}
-                  {% include 'lecturers/blocks/delete_button.html' with small_button=1 delete_url=delete_url %}
+                  {% include 'front/blocks/delete_button.html' with small_button=1 delete_url=delete_url %}
               </div>
           {% endif %}
           {% url 'tipps:tipp_vote' tipp.pk as vote_url %}
-          {% include 'lecturers/blocks/vote_buttons.html' with vote_elem=tipp vote_url=vote_url %}
+          {% include 'front/blocks/vote_buttons.html' with vote_elem=tipp vote_url=vote_url %}
           <div class="quote-wrapper">
             <p><em>{{ tipp.summary }}</em></p>
             {% if tipp.author %}
@@ -59,7 +59,7 @@
         </article>
     {% endfor %}
 
-    {% include 'lecturers/blocks/pagination.html' %}
+    {% include 'front/blocks/pagination.html' %}
 
     {% else %}
         <p><em>Keine Tipps gefunden.</em></p>
