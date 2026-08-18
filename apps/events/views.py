@@ -98,8 +98,9 @@ def add_recurring_events(events):
             for date in dates[1:]:
                 new_e = copy.copy(e)
                 new_e.start_date = date
+                new_e.is_recurring_instance = True
                 new_e.end_date = (
-                    date + (e.start_date - e.end_date)
+                    date + (e.end_date - e.start_date)
                     if e.end_date is not None
                     else None
                 )

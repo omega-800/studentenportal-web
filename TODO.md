@@ -9,7 +9,7 @@
   - [x] Besseres Design der Events
     - [x] fix css oopsie in event list (thumbnail positioning)
   - [x] Recurring events
-    - [ ] TODO: testing, show clearer distinction?
+    - [x] TODO: testing, show clearer distinction?
 
 - [ ] Tipps & Tricks: unsere Sammlung an Links und Infos
 
