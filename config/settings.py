@@ -61,7 +61,7 @@ USE_I18N = True
 
 # migration to 5.0
 USE_TZ = False
-# migration to 6.0
+# Silence Django 5.x deprecation warning — HTTPS is the default in Django 6.0
 FORMS_URLFIELD_ASSUME_HTTPS = True
 
 DATABASES = {
