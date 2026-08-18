@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Aktivierungsmail gesendet{% endblock %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h1>Aktivierungsmail gesendet</h1>
+    </div>
+
+    <p>Falls ein Account mit dieser E-Mail-Adresse existiert und noch nicht aktiviert wurde,
+       erhältst du in Kürze eine neue Aktivierungsmail.</p>
+
+    <p><a href="{% url 'auth_login' %}">Zurück zum Login</a></p>
+
+{% endblock %}

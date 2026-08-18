@@ -29,6 +29,16 @@ urlpatterns = [
     re_path(r"^dokumente/", include(document_urls)),
     re_path(r"", include(lecturer_urls)),
     # Auth pages
+    re_path(
+        r"^accounts/resend-activation/$",
+        views.ResendActivation.as_view(),
+        name="resend_activation",
+    ),
+    re_path(
+        r"^accounts/resend-activation/complete/$",
+        views.ResendActivationComplete.as_view(),
+        name="resend_activation_complete",
+    ),
     re_path(r"^accounts/", include("registration.backends.default.urls")),
     # Admin pages
     re_path(r"^admin/doc/", include("django.contrib.admindocs.urls")),
