@@ -51,7 +51,7 @@
   - [x] remove/archive base image (github+dockerhub)
 - [o] lots of duplicated code between quotes & tipps due to @omega-800 's skill issues
 - [ ] svgs instead of fonts for icons
-- [ ] add robots.txt
+- [x] add robots.txt
 
 ## yeah...
 
