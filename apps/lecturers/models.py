@@ -1,12 +1,12 @@
 import os
 import re
-from datetime import datetime
 
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.functions import Coalesce, Round
 
+from apps.front.models import VotableModel, VoteModel
 from apps.lecturers import managers
 
 
@@ -138,7 +138,7 @@ class LecturerRating(models.Model):
         unique_together = ("user", "lecturer", "category")
 
 
-class Quote(models.Model):
+class Quote(VotableModel):
     """Lecturer quotes."""
 
     author = models.ForeignKey(
@@ -150,28 +150,16 @@ class Quote(models.Model):
     lecturer = models.ForeignKey(
         Lecturer, verbose_name="Dozent", related_name="Quote", on_delete=models.CASCADE
     )
-    date = models.DateTimeField(auto_now_add=True)
     quote = models.TextField("Zitat")
     comment = models.TextField("Bemerkung", default="", blank=True)
 
-    def date_available(self):
-        return self.date != datetime(1970, 1, 1)
-
-    def vote_sum(self):
-        """Add up and return all votes for this quote."""
-        up = self.QuoteVote.filter(vote=True).count()
-        down = self.QuoteVote.filter(vote=False).count()
-        return up - down
+    vote_relation = "QuoteVote"
 
     def __str__(self):
         return f"[{self.lecturer}] {self.quote[:30]}..."
 
-    class Meta:
-        ordering = ["-date"]
-        get_latest_by = "date"
 
-
-class QuoteVote(models.Model):
+class QuoteVote(VoteModel):
     """Lecturer quote votes."""
 
     user = models.ForeignKey(
@@ -181,7 +169,6 @@ class QuoteVote(models.Model):
         on_delete=models.SET_NULL,
     )
     quote = models.ForeignKey(Quote, related_name="QuoteVote", on_delete=models.CASCADE)
-    vote = models.BooleanField(help_text="True = upvote, False = downvote")
 
     def __str__(self):
         fmt_args = self.user.username, "up" if self.vote else "down", self.quote.pk

@@ -49,7 +49,7 @@
   - [x] update python:3.10 (+ remove unnecessary deps?)
   - [x] remove base image completely from web
   - [x] remove/archive base image (github+dockerhub)
-- [o] lots of duplicated code between quotes & tipps due to @omega-800 's skill issues
+- [x] lots of duplicated code between quotes & tipps due to @omega-800 's skill issues
 - [ ] svgs instead of fonts for icons
 - [x] add robots.txt
 
