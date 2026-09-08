@@ -28,9 +28,9 @@
 
 - [ ] Zitat/Meme der Woche, Studentenzitate (Vorschlag Jasmin)
 
-- [ ] save email addresses in db in lowercase https://github.com/studentenportal/web/issues/678#issuecomment-5083145263
+- [x] save email addresses in db in lowercase https://github.com/studentenportal/web/issues/678#issuecomment-5083145263
 
-  - [ ] also migrate the addresses already present
+  - [x] also migrate the addresses already present
 
 - [ ] login problem
 

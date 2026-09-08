@@ -31,7 +31,7 @@ class HsrRegistrationForm(RegistrationForm):
     username = forms.CharField(label="Username", required=False)
 
     def clean_email(self):
-        email = self.cleaned_data["email"]
+        email = self.cleaned_data["email"].lower()
 
         # Only allow OST e-mails
         email_domain = email.split("@")[1]
