@@ -32,9 +32,9 @@
 
   - [x] also migrate the addresses already present
 
-- [ ] login problem
+- [x] login problem
 
-  - [ ] add "send verification mail again" button
+  - [x] add "send verification mail again" button
 
 ## technical
 
