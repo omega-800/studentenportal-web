@@ -44,6 +44,7 @@
   - [x] server: ubuntu 18.04 -> 26.04
     - [x] ubuntu is a pain in my assholes
   - [ ] secure sshd config on new VM (ansible)
+  - [x] fix Django deprecation warnings (FORMS_URLFIELD_ASSUME_HTTPS, index_together in DocumentDownload)
   - [ ] update pg to 18/newest
   - [ ] fix Django deprecation warnings (FORMS_URLFIELD_ASSUME_HTTPS, index_together in DocumentDownload)
 - [x] docker image
