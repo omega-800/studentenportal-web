@@ -42,9 +42,9 @@
                 {% if not event.end_date %}{{ event.start_date|date:"D, d. F Y" }} {{ event.end_time|time:"H:i" }}{% endif %}
             </li>
         {% endif %}
-        {% if event.repeats and event.repeat_days and event.repeat_ends %}
-            <li><strong>Wiederholt sich:</strong> 
-              Jede {{ event.repeat_days }} Tage bis {{ event.repeat_ends|date:"D, d. F Y" }} 
+        {% if event.repeats and event.repeat_every and event.repeat_unit and event.repeat_ends %}
+            <li><strong>Wiederholt sich:</strong>
+              Alle {{ event.repeat_every }} {{ event.get_repeat_unit_display }} bis {{ event.repeat_ends|date:"D, d. F Y" }}
             </li>
         {% endif %}
         {% if event.location %}<li><strong>Ort:</strong> {{ event.location }}</li>{% endif %}

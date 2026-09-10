@@ -16,7 +16,7 @@
             <div class="event-top">
               <div class="event-title">
                   <a href="{% url 'events:event_detail' event.pk %}">
-                    <h3>{{ event.summary }}</h3>
+                    <h3>{{ event.summary }}{% if event.is_recurring_instance %} <span class="label">Wiederkehrend</span>{% endif %}</h3>
                   </a>
                   {% if event.author %}
                       <a rel="author" href="{% url 'user' event.author.pk event.author.username|slugify %}">{{ event.author.name }}</a>
