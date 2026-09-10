@@ -7,6 +7,10 @@ from registration.forms import RegistrationForm
 USERNAME_REGEX = re.compile(r"^[a-zA-Z0-9-_.]+$")
 
 
+class ResendActivationForm(forms.Form):
+    email = forms.EmailField(label="E-Mail")
+
+
 class ProfileForm(forms.ModelForm):
     # Note: Don't allow users to change their own e-mail!
     class Meta:

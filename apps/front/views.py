@@ -2,11 +2,13 @@ import datetime
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Count
-from django.urls import reverse
-from django.views.generic import TemplateView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import FormView, TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
+from registration.models import RegistrationProfile
 
 from apps.documents import models as document_models
 from apps.events import models as event_models
@@ -59,6 +61,33 @@ class User(LoginRequiredMixin, DetailView):
         # the logged in user, not the viewed one, accessed as "object"
         context["user"] = self.request.user
         return context
+
+
+class ResendActivation(FormView):
+    form_class = forms.ResendActivationForm
+    template_name = "registration/resend_activation_form.html"
+    success_url = reverse_lazy("resend_activation_complete")
+
+    def form_valid(self, form):
+        email = form.cleaned_data["email"]
+        site = get_current_site(self.request)
+        try:
+            profile = RegistrationProfile.objects.get(user__email__iexact=email)
+        except RegistrationProfile.DoesNotExist:
+            # Don't reveal whether the email exists
+            return super().form_valid(form)
+
+        if profile.activated:
+            return super().form_valid(form)
+
+        # Always regenerate the key and resend — even if expired
+        profile.create_new_activation_key()
+        profile.send_activation_email(site, self.request)
+        return super().form_valid(form)
+
+
+class ResendActivationComplete(TemplateView):
+    template_name = "registration/resend_activation_complete.html"
 
 
 class Stats(LoginRequiredMixin, TemplateView):
