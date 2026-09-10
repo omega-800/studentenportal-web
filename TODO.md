@@ -60,3 +60,9 @@
 - [ ] remote: GitHub found 47 vulnerabilities on studentenportal/web's default branch (4 critical, 16 high, 27 moderate). To find out more, visit:
   remote: https://github.com/studentenportal/web/security/dependabot
 - [ ] Jul 27 00:03:32 studentenportal systemd\[1\]: Failed to start duply.service - Duply backup.
+
+## testing
+
+- [ ] Register a new user, resend activation email, verify it arrives
+- [ ] Wait for key to expire, resend — verify new key works
+- [ ] Submit form with unknown email — verify same success message shown
