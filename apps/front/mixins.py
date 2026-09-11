@@ -34,9 +34,7 @@ class OwnerDeleteMixin:
         return handler
 
     def get_success_url(self):
-        messages.add_message(
-            self.request, messages.SUCCESS, self.success_message
-        )
+        messages.add_message(self.request, messages.SUCCESS, self.success_message)
         messages.add_message(self.request, EVENT, self.event_name)
         return reverse(self.success_url_name)
 

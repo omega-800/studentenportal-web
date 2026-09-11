@@ -6,7 +6,11 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.list import ListView
 
-from apps.front.mixins import AutoUpvoteCreateMixin, LoginRequiredMixin, OwnerDeleteMixin
+from apps.front.mixins import (
+    AutoUpvoteCreateMixin,
+    LoginRequiredMixin,
+    OwnerDeleteMixin,
+)
 from apps.front.voting import extend_with_votes
 from apps.lecturers import forms, models
 
@@ -21,7 +25,9 @@ class Lecturer(LoginRequiredMixin, DetailView):
         # Quotes / QuoteVotes
         context["quotes"] = extend_with_votes(
             self.object.Quote.all(),
-            "lecturers_quotevote", "quote_id", "lecturers_quote",
+            "lecturers_quotevote",
+            "quote_id",
+            "lecturers_quote",
             self.request.user.pk,
         )
 
@@ -71,7 +77,9 @@ class QuoteList(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return extend_with_votes(
             models.Quote.objects.all(),
-            "lecturers_quotevote", "quote_id", "lecturers_quote",
+            "lecturers_quotevote",
+            "quote_id",
+            "lecturers_quote",
             self.request.user.pk,
         )
 

@@ -3,7 +3,11 @@ from django.urls import reverse
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.list import ListView
 
-from apps.front.mixins import AutoUpvoteCreateMixin, LoginRequiredMixin, OwnerDeleteMixin
+from apps.front.mixins import (
+    AutoUpvoteCreateMixin,
+    LoginRequiredMixin,
+    OwnerDeleteMixin,
+)
 from apps.front.voting import VoteViewMixin, extend_with_votes
 from apps.tipps import forms, models
 
@@ -14,7 +18,9 @@ class TippList(ListView):
     def get_queryset(self):
         return extend_with_votes(
             models.Tipp.objects.all(),
-            "tipps_tippvote", "tipp_id", "tipps_tipp",
+            "tipps_tippvote",
+            "tipp_id",
+            "tipps_tipp",
             self.request.user.pk,
         )
 

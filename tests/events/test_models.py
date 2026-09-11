@@ -135,10 +135,10 @@ class TestRepeatDates:
         end = datetime.date(2026, 4, 30)
         dates = repeat_dates(start, 1, "month", end)
         assert dates == [
-            datetime.date(2026, 1, 5),   # 1st Monday of Jan
-            datetime.date(2026, 2, 2),   # 1st Monday of Feb
-            datetime.date(2026, 3, 2),   # 1st Monday of Mar
-            datetime.date(2026, 4, 6),   # 1st Monday of Apr
+            datetime.date(2026, 1, 5),  # 1st Monday of Jan
+            datetime.date(2026, 2, 2),  # 1st Monday of Feb
+            datetime.date(2026, 3, 2),  # 1st Monday of Mar
+            datetime.date(2026, 4, 6),  # 1st Monday of Apr
         ]
 
     def test_monthly_skips_when_nth_weekday_missing(self):
@@ -232,7 +232,9 @@ class TestAddRecurringEvents:
             repeat_ends=datetime.date(2026, 1, 19),
         )
         future, past = add_recurring_events(models.Event.objects.all())
-        originals = [e for e in future if not getattr(e, "is_recurring_instance", False)]
+        originals = [
+            e for e in future if not getattr(e, "is_recurring_instance", False)
+        ]
         copies = [e for e in future if getattr(e, "is_recurring_instance", False)]
         assert len(originals) == 1
         assert len(copies) == 2
