@@ -93,7 +93,11 @@
                         <a href="{% url 'user' user.pk user.username %}"><i class="icon-user {% ifactivetab 'navigation' 'login' %}icon-white{% endifactivetab %}"></i> Profil</a>
                     </li>
                     <li>
-                        <a class="icon-logout" href="{% url 'auth_logout' %}">Logout</a>
+                      <form method="post" action="{% url 'auth_logout' %}">
+                        {% csrf_token %}
+                        <button class="icon-logout" type="submit" id="logout-button">Logout</button>
+                      </form>
+                        <!-- <a class="icon-logout" href="{% url 'auth_logout' %}">Logout</a> -->
                     </li>
                     {% else %}
                     <li class="{% ifactivetab 'navigation' 'login' %}active{% endifactivetab %}">

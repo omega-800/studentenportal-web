@@ -8,6 +8,7 @@
     - [ ] TODO: add recurring event for "Tutorate"
   - [x] Besseres Design der Events
     - [x] fix css oopsie in event list (thumbnail positioning)
+    - [ ] fix css oopsie in event list (mobile)
   - [x] Recurring events
     - [x] TODO: testing, show clearer distinction?
 
@@ -54,6 +55,7 @@
 - [x] lots of duplicated code between quotes & tipps due to @omega-800 's skill issues
 - [ ] svgs instead of fonts for icons
 - [x] add robots.txt
+- [ ] backup isn't working :((
 
 ## yeah...
 
