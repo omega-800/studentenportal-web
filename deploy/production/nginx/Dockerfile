@@ -1,6 +1,6 @@
 # Latest stable in August 2022
 # https://hub.docker.com/_/nginx/
-FROM nginx:1.22
+FROM nginx:1.31
 
 ARG DEHYDRATED_VERSION=v0.7.0
 
@@ -12,9 +12,9 @@ ADD deploy/production/nginx/dehydrated/config /etc/dehydrated/
 ADD deploy/production/nginx/dehydrated/domains.txt /etc/dehydrated/
 ADD deploy/production/nginx/dehydrated/hook.sh /etc/dehydrated/
 RUN chmod a+x /usr/local/bin/dehydrated \
-              /etc/dehydrated/hook.sh && \
-    mkdir -p /var/www/dehydrated \
-             /etc/dehydrated/certs/studentenportal.ch
+    /etc/dehydrated/hook.sh \
+    && mkdir -p /var/www/dehydrated \
+        /etc/dehydrated/certs/studentenportal.ch
 
 ADD deploy/production/nginx/default.conf /etc/nginx/conf.d/
 ADD deploy/production/nginx/nginx.conf /etc/nginx/
