@@ -139,7 +139,7 @@ body {
         margin: 0;
         padding: 0;
 
-        a {
+        a, button {
             font-size: $font-size-browser;
             padding: $gutter 0.75rem;
             display: block;
@@ -157,13 +157,19 @@ body {
         }
     }
 
-    li.active a {
-        background-color: $color-navigation-background-active;
+    li.active {
+        a, button {
+            background-color: $color-navigation-background-active;
+        }
     }
 
     &:before {
         clear: left;
     }
+}
+
+#logout-button {
+  margin: 0;
 }
 
 // Show if in DEBUG mode

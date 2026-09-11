@@ -119,6 +119,53 @@ class EventDetailViewTest(TestCase):
 
 
 @pytest.mark.django_db(transaction=True)
+def test_recurring_event_list(client, transactional_db):
+    """Recurring events should appear multiple times in the event list."""
+    user = baker.make(get_user_model(), username="recur_user")
+    # Create a recurring event in the future
+    import datetime as dt
+
+    future_date = dt.date.today() + dt.timedelta(days=7)
+    models.Event.objects.create(
+        summary="Weekly Meeting",
+        description="Recurring test",
+        author=user,
+        start_date=future_date,
+        repeats=True,
+        repeat_every=1,
+        repeat_unit="week",
+        repeat_ends=future_date + dt.timedelta(days=21),
+    )
+    response = client.get("/events/")
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert content.count("Weekly Meeting") == 4  # original + 3 copies
+
+
+@pytest.mark.django_db(transaction=True)
+def test_recurring_event_shows_label(client, transactional_db):
+    """Recurring event copies should show the recurring indicator."""
+    user = baker.make(get_user_model(), username="label_user")
+    import datetime as dt
+
+    future_date = dt.date.today() + dt.timedelta(days=7)
+    models.Event.objects.create(
+        summary="Repeater",
+        description="Test",
+        author=user,
+        start_date=future_date,
+        repeats=True,
+        repeat_every=1,
+        repeat_unit="week",
+        repeat_ends=future_date + dt.timedelta(days=14),
+    )
+    response = client.get("/events/")
+    content = response.content.decode("utf-8")
+    # The 2 copies (not the original) should have the recurring label
+    assert content.count("Wiederkehrend") == 2
+
+
+@pytest.mark.django_db(transaction=True)
 def test_ical_event1(client, test_events):
     response = client.get(reverse("events:event_calendar"))
     event = response.content.decode("utf-8").split("BEGIN:VEVENT")[1]

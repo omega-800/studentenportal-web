@@ -45,6 +45,7 @@
 
             <input type="password" name="{{ form.password.name }}" id="id_{{ form.password.name }}" placeholder="{{ form.password.label }}">
             <a class="note" href="{% url 'auth_password_reset' %}">Passwort vergessen?</a>
+            <a class="note" href="{% url 'resend_activation' %}">Aktivierungsmail nicht erhalten?</a>
 
             <br clear="all" />
 
