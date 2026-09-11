@@ -1,15 +1,18 @@
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Count
-from django.http import HttpResponseForbidden
 from django.urls import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.list import ListView
 
-from apps.front.message_levels import EVENT
-from apps.front.mixins import LoginRequiredMixin
-from apps.lecturers import forms, helpers, models
+from apps.front.mixins import (
+    AutoUpvoteCreateMixin,
+    LoginRequiredMixin,
+    OwnerDeleteMixin,
+)
+from apps.front.voting import extend_with_votes
+from apps.lecturers import forms, models
 
 
 class Lecturer(LoginRequiredMixin, DetailView):
@@ -20,8 +23,12 @@ class Lecturer(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
 
         # Quotes / QuoteVotes
-        context["quotes"] = helpers.extend_quotes_with_votes(
-            self.object.Quote.all(), self.request.user.pk
+        context["quotes"] = extend_with_votes(
+            self.object.Quote.all(),
+            "lecturers_quotevote",
+            "quote_id",
+            "lecturers_quote",
+            self.request.user.pk,
         )
 
         # Ratings
@@ -68,14 +75,20 @@ class QuoteList(LoginRequiredMixin, ListView):
     paginate_by = 50
 
     def get_queryset(self):
-        return helpers.extend_quotes_with_votes(
-            models.Quote.objects.all(), self.request.user.pk
+        return extend_with_votes(
+            models.Quote.objects.all(),
+            "lecturers_quotevote",
+            "quote_id",
+            "lecturers_quote",
+            self.request.user.pk,
         )
 
 
-class QuoteAdd(LoginRequiredMixin, CreateView):
+class QuoteAdd(LoginRequiredMixin, AutoUpvoteCreateMixin, CreateView):
     model = models.Quote
     form_class = forms.QuoteForm
+    vote_model = models.QuoteVote
+    item_fk_name = "quote"
 
     def dispatch(self, request, *args, **kwargs):
         try:
@@ -93,48 +106,22 @@ class QuoteAdd(LoginRequiredMixin, CreateView):
         context["lecturer"] = self.lecturer
         return context
 
-    def form_valid(self, form):
-        """Override the form_valid method of the ModelFormMixin to insert
-        value of author field. To do this, the form's save() method is
-        called with commit=False to be able to edit the new object before
-        actually saving it. Additionally, directly upvote the quote."""
-        self.object = form.save(commit=False)
-        is_edit = self.object.pk is not None
-        self.object.author = self.request.user
-        self.object.save()
-        if not is_edit:
-            # Automatically upvote own quote
-            models.QuoteVote.objects.create(
-                user=self.request.user,
-                quote=self.object,
-                vote=True,
-            )
-        return super().form_valid(form)
-
     def get_success_url(self):
         """Redirect to quotes or lecturer page."""
         messages.add_message(
             self.request, messages.SUCCESS, "Zitat wurde erfolgreich hinzugefügt."
         )
+        from apps.front.message_levels import EVENT
+
         messages.add_message(self.request, EVENT, "quote_add")
         if self.lecturer:
             return reverse("lecturers:lecturer_detail", args=[self.lecturer.pk])
         return reverse("lecturers:quote_list")
 
 
-class QuoteDelete(LoginRequiredMixin, DeleteView):
+class QuoteDelete(LoginRequiredMixin, OwnerDeleteMixin, DeleteView):
     model = models.Quote
-
-    def dispatch(self, request, *args, **kwargs):
-        handler = super().dispatch(request, *args, **kwargs)
-        # Only allow deletion if current user is owner
-        if self.object.author != request.user:
-            return HttpResponseForbidden("Du darfst keine fremden Quotes löschen.")
-        return handler
-
-    def get_success_url(self):
-        messages.add_message(
-            self.request, messages.SUCCESS, "Zitat wurde erfolgreich gelöscht."
-        )
-        messages.add_message(self.request, EVENT, "quote_delete")
-        return reverse("lecturers:quote_list")
+    forbidden_message = "Du darfst keine fremden Quotes löschen."
+    success_message = "Zitat wurde erfolgreich gelöscht."
+    event_name = "quote_delete"
+    success_url_name = "lecturers:quote_list"

@@ -166,9 +166,13 @@ input[type="file"] {
 /* ===RESPONSIVE FORMS=== */
 @media (min-width: 70rem) {
   .form-horizontal {
-    label, p.help-block, ul.errorlist {
+    .control-group > label, p.help-block, ul.errorlist {
       float: left;
       width: 30%;
+    }
+    p.help-block label {
+      float: none;
+      width: auto;
     }
     input, textarea, select {
       float: right;

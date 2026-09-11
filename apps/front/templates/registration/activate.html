@@ -9,8 +9,11 @@
 
     {% if account %}
         <p>Account erfolgreich aktiviert</p>
+        <p><a href="{% url 'auth_login' %}">Zum Login</a></p>
     {% else %}
-        <p>Aktivierung fehlgeschlagen. Möglicherweise ist dein Account schon aktiv.</p>
+        <p>Aktivierung fehlgeschlagen. Möglicherweise ist dein Account schon aktiv
+           oder der Link ist abgelaufen.</p>
+        <p><a href="{% url 'resend_activation' %}">Aktivierungsmail erneut senden</a></p>
     {% endif %}
 
 {% endblock %}
