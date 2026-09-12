@@ -32,8 +32,10 @@ class TippList(ListView):
         if q:
             qs = qs.filter(Q(summary__icontains=q) | Q(description__icontains=q))
 
-        # Annotate comment count
-        qs = qs.annotate(comment_count=Count("comments"))
+        # Annotate comment count and prefetch comments to avoid N+1 queries
+        qs = qs.annotate(comment_count=Count("comments")).prefetch_related(
+            "comments", "comments__author"
+        )
 
         # Sort
         sort = self.request.GET.get("sort", "votes")
