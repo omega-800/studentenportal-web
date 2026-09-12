@@ -42,7 +42,7 @@ class TippList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["current_sort"] = self.request.GET.get("sort", "votes")
-        context["search_query"] = self.request.GET.get("q", "")
+        context["search_query"] = self.request.GET.get("q", "").strip()
         return context
 
 
