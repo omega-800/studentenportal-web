@@ -67,16 +67,15 @@ class TippEdit(LoginRequiredMixin, UpdateView):
     form_class = forms.TippForm
     template_name = "tipps/tipp_form.html"
 
-    def dispatch(self, request, *args, **kwargs):
-        response = super().dispatch(request, *args, **kwargs)
-        # If LoginRequiredMixin returned a redirect (anonymous user), return it
-        if response.status_code in (302, 303):
-            return response
-        # Now check ownership
-        tipp = self.get_object()
-        if tipp.author != request.user:
+    def get(self, request, *args, **kwargs):
+        if self.get_object().author != request.user:
             return HttpResponseForbidden("Du darfst keine fremden Tipps bearbeiten.")
-        return response
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if self.get_object().author != request.user:
+            return HttpResponseForbidden("Du darfst keine fremden Tipps bearbeiten.")
+        return super().post(request, *args, **kwargs)
 
     def get_success_url(self):
         messages.add_message(
