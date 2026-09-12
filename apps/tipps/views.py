@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models import Q
 from django.urls import reverse
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.list import ListView
@@ -16,13 +17,33 @@ class TippList(ListView):
     paginate_by = 50
 
     def get_queryset(self):
-        return extend_with_votes(
+        qs = extend_with_votes(
             models.Tipp.objects.all(),
             "tipps_tippvote",
             "tipp_id",
             "tipps_tipp",
             self.request.user.pk,
         )
+
+        # Search
+        q = self.request.GET.get("q", "").strip()
+        if q:
+            qs = qs.filter(Q(summary__icontains=q) | Q(description__icontains=q))
+
+        # Sort
+        sort = self.request.GET.get("sort", "votes")
+        if sort == "date":
+            qs = qs.order_by("-date")
+        else:
+            qs = qs.order_by("-upvote_count", "-date")
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["current_sort"] = self.request.GET.get("sort", "votes")
+        context["search_query"] = self.request.GET.get("q", "")
+        return context
 
 
 class TippAdd(LoginRequiredMixin, AutoUpvoteCreateMixin, CreateView):
