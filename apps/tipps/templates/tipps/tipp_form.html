@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        .editor-toolbar button {
+        .editor-toolbar button:not(.button) {
             all: unset;
             color: #000;
             cursor: pointer;
@@ -23,8 +23,8 @@
             justify-content: center;
             font-size: 1rem;
         }
-        .editor-toolbar button:hover,
-        .editor-toolbar button.active {
+        .editor-toolbar button:not(.button):hover,
+        .editor-toolbar button:not(.button).active {
             background: #e6e6e6;
             border-radius: 3px;
         }
@@ -44,10 +44,10 @@
         <h1>Tipp hinzufügen</h1>
     </div>
 
-    <form method="POST" class="form-horizontal">{% csrf_token %}
+    <form method="POST" class="form-horizontal" id="tipp-form">{% csrf_token %}
         {% include 'lib/form_loop.html' %}
         <div class="form-actions">
-            <input type="submit" class="button button-primary" value="Eintragen" />
+            <button type="submit" class="button button-primary">Eintragen</button>
             <a href="{% url 'tipps:tipp_list' %}" class="button">Abbrechen</a>
         </div>
     </form>
@@ -56,11 +56,14 @@
     <script>
         var descField = document.getElementById('id_description');
         if (descField) {
-            new EasyMDE({
+            var easyMDE = new EasyMDE({
                 element: descField,
                 spellChecker: false,
                 status: false,
                 autoDownloadFontAwesome: false,
+            });
+            document.getElementById('tipp-form').addEventListener('submit', function() {
+                descField.value = easyMDE.value();
             });
         }
     </script>
