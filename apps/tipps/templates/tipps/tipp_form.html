@@ -9,6 +9,8 @@
 {% endblock %}
 
 {% block content %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+
     <div class="page-header">
         <h1>Tipp hinzufügen</h1>
     </div>
@@ -20,4 +22,16 @@
             <a href="{% url 'tipps:tipp_list' %}" class="button">Abbrechen</a>
         </div>
     </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+    <script>
+        var descField = document.getElementById('id_description');
+        if (descField) {
+            new EasyMDE({
+                element: descField,
+                spellChecker: false,
+                status: false,
+            });
+        }
+    </script>
 {% endblock %}

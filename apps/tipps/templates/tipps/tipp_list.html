@@ -1,6 +1,7 @@
 {% extends 'base.html' %} {% load tabs %}
 {% load thumbnail %}
 {% load compress %}
+{% load md %}
 
 {% block title %}Tipps und Tricks{% endblock %}
 
@@ -64,7 +65,7 @@
             {% else %}
                 <span class="author">Gelöschter User</span>
             {% endif %}
-            <p>{{ tipp.description }}</p>
+            <div class="tipp-description">{{ tipp.description|render_markdown }}</div>
             <p>{{ tipp.date|date }}</p>
           </div>
         </article>

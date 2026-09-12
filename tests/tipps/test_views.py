@@ -109,3 +109,25 @@ class TestTippListSearch:
         response = auth_client.get("/tipps/?q=findme")
         content = response.content.decode()
         assert 'value="findme"' in content
+
+
+@pytest.mark.django_db
+class TestTippMarkdownRendering:
+    def test_markdown_rendered_in_list(self, auth_client, user):
+        Tipp.objects.create(
+            author=user, summary="MD Tipp", description="**bold text** and *italic*"
+        )
+        response = auth_client.get("/tipps/")
+        content = response.content.decode()
+        assert "<strong>bold text</strong>" in content
+        assert "<em>italic</em>" in content
+
+    def test_xss_stripped_in_list(self, auth_client, user):
+        Tipp.objects.create(
+            author=user,
+            summary="XSS Tipp",
+            description="<script>alert('xss')</script>",
+        )
+        response = auth_client.get("/tipps/")
+        content = response.content.decode()
+        assert "<script>" not in content
