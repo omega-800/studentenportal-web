@@ -9,8 +9,31 @@
 {% endblock %}
 
 {% block content %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .editor-toolbar button {
+            color: #000 !important;
+            background: none !important;
+            border: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 30px;
+            height: 30px;
+            display: inline-block;
+        }
+        .editor-toolbar button:hover,
+        .editor-toolbar button.active {
+            background: #e6e6e6 !important;
+            border-radius: 3px;
+        }
+        .editor-toolbar {
+            padding: 5px;
+        }
+        .EasyMDEContainer .CodeMirror {
+            height: 200px;
+        }
+    </style>
 
     <div class="page-header">
         <h1>Tipp hinzufügen</h1>
@@ -24,7 +47,7 @@
         </div>
     </form>
 
-    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js"></script>
     <script>
         var descField = document.getElementById('id_description');
         if (descField) {
@@ -32,6 +55,7 @@
                 element: descField,
                 spellChecker: false,
                 status: false,
+                autoDownloadFontAwesome: false,
             });
         }
     </script>
