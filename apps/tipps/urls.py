@@ -22,4 +22,19 @@ urlpatterns = [
         name="tipp_delete",
     ),
     re_path(r"^(?P<pk>-?\d+)/vote$", views.TippVote.as_view(), name="tipp_vote"),
+    re_path(
+        r"^(?P<pk>-?\d+)/comment/add/$",
+        views.TippCommentAdd.as_view(),
+        name="tipp_comment_add",
+    ),
+    re_path(
+        r"^comment/(?P<pk>-?\d+)/edit/$",
+        views.TippCommentEdit.as_view(),
+        name="tipp_comment_edit",
+    ),
+    re_path(
+        r"^comment/(?P<pk>-?\d+)/delete/$",
+        views.TippCommentDelete.as_view(),
+        name="tipp_comment_delete",
+    ),
 ]

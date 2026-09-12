@@ -69,6 +69,39 @@
             <div class="tipp-description">{{ tipp.description|render_markdown }}</div>
             <p>{{ tipp.date|date }}</p>
           </div>
+          <div class="comments-section">
+            <button class="button comment-toggle" onclick="var el=document.getElementById('comments-{{ tipp.pk }}'); el.style.display = el.style.display === 'none' ? 'block' : 'none';">
+                {{ tipp.comment_count }} Kommentar{{ tipp.comment_count|pluralize:"e" }}
+            </button>
+            <div id="comments-{{ tipp.pk }}" style="display:none;">
+                {% for comment in tipp.comments.all %}
+                    <div class="comment">
+                        <p class="comment-meta">
+                            {% if comment.author %}
+                                <strong>{{ comment.author.name }}</strong>
+                            {% else %}
+                                <strong>Gelöschter User</strong>
+                            {% endif %}
+                            — {{ comment.date|date }}
+                            {% if comment.author_id == user.pk %}
+                                <a href="{% url 'tipps:tipp_comment_edit' comment.pk %}">Bearbeiten</a>
+                                <a href="{% url 'tipps:tipp_comment_delete' comment.pk %}">Löschen</a>
+                            {% elif user.is_staff %}
+                                <a href="{% url 'tipps:tipp_comment_delete' comment.pk %}">Löschen</a>
+                            {% endif %}
+                        </p>
+                        <p>{{ comment.text }}</p>
+                    </div>
+                {% endfor %}
+                {% if user.is_authenticated %}
+                    <form method="POST" action="{% url 'tipps:tipp_comment_add' tipp.pk %}" class="comment-form">
+                        {% csrf_token %}
+                        <textarea name="text" placeholder="Kommentar hinzufügen..." required></textarea>
+                        <button type="submit" class="button">Kommentar hinzufügen</button>
+                    </form>
+                {% endif %}
+            </div>
+          </div>
         </article>
     {% endfor %}
 

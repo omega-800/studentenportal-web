@@ -1,7 +1,7 @@
 import pytest
 from django.contrib.auth import get_user_model
 
-from apps.tipps.models import Tipp, TippVote
+from apps.tipps.models import Tipp, TippComment, TippVote
 
 User = get_user_model()
 
@@ -182,3 +182,119 @@ class TestTippEdit:
         response = auth_client.get("/tipps/")
         content = response.content.decode()
         assert "Bearbeiten" not in content
+
+
+@pytest.fixture
+def staff_user(db):
+    return User.objects.create_user(
+        username="admin", password="test", email="admin@studentenportal.ch",
+        is_staff=True,
+    )
+
+
+@pytest.fixture
+def staff_client(client, staff_user):
+    assert client.login(username="admin", password="test")
+    return client
+
+
+@pytest.mark.django_db
+class TestTippCommentAdd:
+    def test_authenticated_user_can_add_comment(self, auth_client, user):
+        tipp = Tipp.objects.create(author=user, summary="Test", description="desc")
+        response = auth_client.post(
+            f"/tipps/{tipp.pk}/comment/add/",
+            {"text": "Great tipp!"},
+        )
+        assert response.status_code == 302
+        assert TippComment.objects.filter(tipp=tipp, text="Great tipp!").exists()
+
+    def test_anonymous_cannot_add_comment(self, client, user):
+        tipp = Tipp.objects.create(author=user, summary="Test", description="desc")
+        response = client.post(
+            f"/tipps/{tipp.pk}/comment/add/",
+            {"text": "Nope"},
+        )
+        assert response.status_code == 302
+        assert "/accounts/login/" in response.url
+        assert TippComment.objects.count() == 0
+
+    def test_comment_sets_author(self, auth_client, user):
+        tipp = Tipp.objects.create(author=user, summary="Test", description="desc")
+        auth_client.post(f"/tipps/{tipp.pk}/comment/add/", {"text": "Comment"})
+        comment = TippComment.objects.first()
+        assert comment.author == user
+
+
+@pytest.mark.django_db
+class TestTippCommentEdit:
+    def test_author_can_edit_comment(self, auth_client, user):
+        tipp = Tipp.objects.create(author=user, summary="Test", description="desc")
+        comment = TippComment.objects.create(tipp=tipp, author=user, text="Original")
+        response = auth_client.post(
+            f"/tipps/comment/{comment.pk}/edit/",
+            {"text": "Updated"},
+        )
+        assert response.status_code == 302
+        comment.refresh_from_db()
+        assert comment.text == "Updated"
+
+    def test_non_author_gets_403(self, auth_client, user, user2):
+        tipp = Tipp.objects.create(author=user2, summary="Test", description="desc")
+        comment = TippComment.objects.create(tipp=tipp, author=user2, text="Other")
+        response = auth_client.get(f"/tipps/comment/{comment.pk}/edit/")
+        assert response.status_code == 403
+
+    def test_anonymous_redirected_to_login(self, client, user):
+        tipp = Tipp.objects.create(author=user, summary="Test", description="desc")
+        comment = TippComment.objects.create(tipp=tipp, author=user, text="Test")
+        response = client.get(f"/tipps/comment/{comment.pk}/edit/")
+        assert response.status_code == 302
+        assert "/accounts/login/" in response.url
+
+
+@pytest.mark.django_db
+class TestTippCommentDelete:
+    def test_author_can_delete_comment(self, auth_client, user):
+        tipp = Tipp.objects.create(author=user, summary="Test", description="desc")
+        comment = TippComment.objects.create(tipp=tipp, author=user, text="Delete me")
+        response = auth_client.post(f"/tipps/comment/{comment.pk}/delete/")
+        assert response.status_code == 302
+        assert TippComment.objects.count() == 0
+
+    def test_admin_can_delete_any_comment(self, staff_client, user):
+        tipp = Tipp.objects.create(author=user, summary="Test", description="desc")
+        comment = TippComment.objects.create(tipp=tipp, author=user, text="Delete me")
+        response = staff_client.post(f"/tipps/comment/{comment.pk}/delete/")
+        assert response.status_code == 302
+        assert TippComment.objects.count() == 0
+
+    def test_non_author_non_admin_gets_403(self, auth_client, user, user2):
+        tipp = Tipp.objects.create(author=user2, summary="Test", description="desc")
+        comment = TippComment.objects.create(tipp=tipp, author=user2, text="Protected")
+        response = auth_client.post(f"/tipps/comment/{comment.pk}/delete/")
+        assert response.status_code == 403
+        assert TippComment.objects.count() == 1
+
+
+@pytest.mark.django_db
+class TestTippCommentInList:
+    def test_comment_count_displayed(self, auth_client, user):
+        tipp = Tipp.objects.create(author=user, summary="Test", description="desc")
+        TippComment.objects.create(tipp=tipp, author=user, text="Comment 1")
+        TippComment.objects.create(tipp=tipp, author=user, text="Comment 2")
+        response = auth_client.get("/tipps/")
+        content = response.content.decode()
+        assert "2 Kommentare" in content
+
+    def test_zero_comments_displayed(self, auth_client, user):
+        Tipp.objects.create(author=user, summary="Test", description="desc")
+        response = auth_client.get("/tipps/")
+        content = response.content.decode()
+        assert "0 Kommentare" in content
+
+    def test_comment_add_form_present_for_authenticated(self, auth_client, user):
+        Tipp.objects.create(author=user, summary="Test", description="desc")
+        response = auth_client.get("/tipps/")
+        content = response.content.decode()
+        assert "Kommentar hinzufügen" in content or 'name="text"' in content

@@ -1,6 +1,7 @@
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
@@ -31,6 +32,9 @@ class TippList(ListView):
         if q:
             qs = qs.filter(Q(summary__icontains=q) | Q(description__icontains=q))
 
+        # Annotate comment count
+        qs = qs.annotate(comment_count=Count("comments"))
+
         # Sort
         sort = self.request.GET.get("sort", "votes")
         if sort == "date":
@@ -44,6 +48,7 @@ class TippList(ListView):
         context = super().get_context_data(**kwargs)
         context["current_sort"] = self.request.GET.get("sort", "votes")
         context["search_query"] = self.request.GET.get("q", "").strip()
+        context["comment_form"] = forms.TippCommentForm()
         return context
 
 
@@ -98,3 +103,64 @@ class TippVote(LoginRequiredMixin, VoteViewMixin):
     item_model = models.Tipp
     vote_model = models.TippVote
     item_fk_name = "tipp"
+
+
+class TippCommentAdd(LoginRequiredMixin, CreateView):
+    model = models.TippComment
+    form_class = forms.TippCommentForm
+
+    def get(self, request, *args, **kwargs):
+        return redirect(reverse("tipps:tipp_list"))
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.tipp = get_object_or_404(models.Tipp, pk=self.kwargs["pk"])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("tipps:tipp_list")
+
+
+class TippCommentEdit(LoginRequiredMixin, UpdateView):
+    model = models.TippComment
+    form_class = forms.TippCommentForm
+    template_name = "tipps/comment_form.html"
+
+    def get(self, request, *args, **kwargs):
+        if self.get_object().author != request.user:
+            return HttpResponseForbidden("Du darfst keine fremden Kommentare bearbeiten.")
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if self.get_object().author != request.user:
+            return HttpResponseForbidden("Du darfst keine fremden Kommentare bearbeiten.")
+        return super().post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        messages.add_message(
+            self.request, messages.SUCCESS, "Kommentar wurde aktualisiert."
+        )
+        return reverse("tipps:tipp_list")
+
+
+class TippCommentDelete(LoginRequiredMixin, DeleteView):
+    model = models.TippComment
+    template_name = "tipps/comment_confirm_delete.html"
+
+    def get(self, request, *args, **kwargs):
+        comment = self.get_object()
+        if comment.author != request.user and not request.user.is_staff:
+            return HttpResponseForbidden("Du darfst keine fremden Kommentare löschen.")
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        comment = self.get_object()
+        if comment.author != request.user and not request.user.is_staff:
+            return HttpResponseForbidden("Du darfst keine fremden Kommentare löschen.")
+        return super().post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        messages.add_message(
+            self.request, messages.SUCCESS, "Kommentar wurde gelöscht."
+        )
+        return reverse("tipps:tipp_list")
