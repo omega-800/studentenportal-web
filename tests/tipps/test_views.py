@@ -72,6 +72,34 @@ class TestTippListSorting:
         assert "Beliebteste" in content
         assert "Neueste" in content
 
+    def test_vote_sum_sorting_accounts_for_downvotes(self, auth_client, user, user2):
+        """A tipp with many upvotes but also many downvotes should rank
+        below a tipp with fewer upvotes but no downvotes (vote_sum matters)."""
+        # tipp_controversial: 2 up, 2 down = net 0
+        tipp_controversial = Tipp.objects.create(
+            author=user, summary="Controversial Tipp", description="divisive"
+        )
+        TippVote.objects.create(user=user, tipp=tipp_controversial, vote=True)
+        TippVote.objects.create(user=user2, tipp=tipp_controversial, vote=True)
+        user3 = User.objects.create_user(username="u3", password="test", email="u3@test.ch")
+        user4 = User.objects.create_user(username="u4", password="test", email="u4@test.ch")
+        TippVote.objects.create(user=user3, tipp=tipp_controversial, vote=False)
+        TippVote.objects.create(user=user4, tipp=tipp_controversial, vote=False)
+
+        # tipp_liked: 1 up, 0 down = net 1
+        tipp_liked = Tipp.objects.create(
+            author=user, summary="Liked Tipp", description="solid"
+        )
+        TippVote.objects.create(user=user, tipp=tipp_liked, vote=True)
+
+        response = auth_client.get("/tipps/")
+        content = response.content.decode()
+        pos_liked = content.index("Liked Tipp")
+        pos_controversial = content.index("Controversial Tipp")
+        assert pos_liked < pos_controversial, (
+            "Tipp with higher vote_sum (1) should rank above controversial (0)"
+        )
+
 
 @pytest.mark.django_db
 class TestTippListSearch:
@@ -225,6 +253,12 @@ class TestTippCommentAdd:
         comment = TippComment.objects.first()
         assert comment.author == user
 
+    def test_get_redirects_to_list(self, auth_client, user):
+        tipp = Tipp.objects.create(author=user, summary="Test", description="desc")
+        response = auth_client.get(f"/tipps/{tipp.pk}/comment/add/")
+        assert response.status_code == 302
+        assert TippComment.objects.count() == 0
+
 
 @pytest.mark.django_db
 class TestTippCommentEdit:
@@ -298,3 +332,73 @@ class TestTippCommentInList:
         response = auth_client.get("/tipps/")
         content = response.content.decode()
         assert "Kommentar hinzufügen" in content or 'name="text"' in content
+
+    def test_comment_add_form_hidden_for_anonymous(self, client, user):
+        Tipp.objects.create(author=user, summary="Test", description="desc")
+        response = client.get("/tipps/")
+        content = response.content.decode()
+        assert 'name="text"' not in content
+
+
+@pytest.mark.django_db
+class TestTippSecurity:
+    def test_xss_in_summary_escaped(self, auth_client, user):
+        """Summary is rendered inside <em> tags — must be HTML-escaped."""
+        Tipp.objects.create(
+            author=user, summary='<img src=x onerror="alert(1)">', description="safe"
+        )
+        response = auth_client.get("/tipps/")
+        content = response.content.decode()
+        assert "onerror" not in content or "&lt;" in content
+        assert '<img src=x onerror=' not in content
+
+    def test_xss_in_markdown_description_sanitized(self, auth_client, user):
+        """Markdown description uses render_markdown with bleach — XSS stripped."""
+        Tipp.objects.create(
+            author=user,
+            summary="Test",
+            description='<img src=x onerror="alert(1)"><a href="javascript:alert(1)">click</a>',
+        )
+        response = auth_client.get("/tipps/")
+        content = response.content.decode()
+        assert "onerror" not in content
+        assert "javascript:" not in content
+
+    def test_comment_text_html_escaped(self, auth_client, user):
+        """Comment text is plain text — HTML must be auto-escaped."""
+        tipp = Tipp.objects.create(author=user, summary="Test", description="desc")
+        TippComment.objects.create(
+            tipp=tipp, author=user, text='<script>alert("xss")</script>'
+        )
+        response = auth_client.get("/tipps/")
+        content = response.content.decode()
+        assert "<script>" not in content
+        assert "&lt;script&gt;" in content
+
+    def test_comment_add_has_csrf_token(self, auth_client, user):
+        """Comment add form must include CSRF token."""
+        Tipp.objects.create(author=user, summary="Test", description="desc")
+        response = auth_client.get("/tipps/")
+        content = response.content.decode()
+        assert "csrfmiddlewaretoken" in content
+
+    def test_non_author_cannot_edit_via_post(self, auth_client, user, user2):
+        """POST to edit should also be blocked for non-authors, not just GET."""
+        tipp = Tipp.objects.create(
+            author=user2, summary="Original", description="Original desc"
+        )
+        response = auth_client.post(
+            f"/tipps/{tipp.pk}/edit/",
+            {"summary": "Hacked", "description": "Hacked"},
+        )
+        assert response.status_code == 403
+        tipp.refresh_from_db()
+        assert tipp.summary == "Original"
+
+    def test_non_author_cannot_delete_comment_via_post(self, auth_client, user, user2):
+        """POST to delete should also be blocked for non-author non-staff."""
+        tipp = Tipp.objects.create(author=user2, summary="Test", description="desc")
+        comment = TippComment.objects.create(tipp=tipp, author=user2, text="Protected")
+        response = auth_client.post(f"/tipps/comment/{comment.pk}/delete/")
+        assert response.status_code == 403
+        assert TippComment.objects.count() == 1
