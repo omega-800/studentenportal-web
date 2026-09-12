@@ -1,7 +1,8 @@
 from django.contrib import messages
 from django.db.models import Q
+from django.http import HttpResponseForbidden
 from django.urls import reverse
-from django.views.generic.edit import CreateView, DeleteView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 
 from apps.front.mixins import (
@@ -57,6 +58,31 @@ class TippAdd(LoginRequiredMixin, AutoUpvoteCreateMixin, CreateView):
             self.request,
             messages.SUCCESS,
             'Tipp "%s" wurde erfolgreich hinzugefügt.' % self.object.summary,
+        )
+        return reverse("tipps:tipp_list")
+
+
+class TippEdit(LoginRequiredMixin, UpdateView):
+    model = models.Tipp
+    form_class = forms.TippForm
+    template_name = "tipps/tipp_form.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        # If LoginRequiredMixin returned a redirect (anonymous user), return it
+        if response.status_code in (302, 303):
+            return response
+        # Now check ownership
+        tipp = self.get_object()
+        if tipp.author != request.user:
+            return HttpResponseForbidden("Du darfst keine fremden Tipps bearbeiten.")
+        return response
+
+    def get_success_url(self):
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            'Tipp "%s" wurde erfolgreich aktualisiert.' % self.object.summary,
         )
         return reverse("tipps:tipp_list")
 

@@ -131,3 +131,54 @@ class TestTippMarkdownRendering:
         response = auth_client.get("/tipps/")
         content = response.content.decode()
         assert "<script>" not in content
+
+
+@pytest.mark.django_db
+class TestTippEdit:
+    def test_author_can_edit(self, auth_client, user):
+        tipp = Tipp.objects.create(
+            author=user, summary="Original", description="Original desc"
+        )
+        response = auth_client.get(f"/tipps/{tipp.pk}/edit/")
+        assert response.status_code == 200
+        assert "Original" in response.content.decode()
+
+    def test_author_can_submit_edit(self, auth_client, user):
+        tipp = Tipp.objects.create(
+            author=user, summary="Original", description="Original desc"
+        )
+        response = auth_client.post(
+            f"/tipps/{tipp.pk}/edit/",
+            {"summary": "Updated", "description": "Updated desc"},
+        )
+        assert response.status_code == 302
+        tipp.refresh_from_db()
+        assert tipp.summary == "Updated"
+        assert tipp.description == "Updated desc"
+
+    def test_non_author_gets_403(self, auth_client, user, user2):
+        tipp = Tipp.objects.create(
+            author=user2, summary="Other", description="Other desc"
+        )
+        response = auth_client.get(f"/tipps/{tipp.pk}/edit/")
+        assert response.status_code == 403
+
+    def test_anonymous_redirected_to_login(self, client, user):
+        tipp = Tipp.objects.create(
+            author=user, summary="Test", description="desc"
+        )
+        response = client.get(f"/tipps/{tipp.pk}/edit/")
+        assert response.status_code == 302
+        assert "/accounts/login/" in response.url
+
+    def test_edit_button_visible_to_author(self, auth_client, user):
+        Tipp.objects.create(author=user, summary="My Tipp", description="desc")
+        response = auth_client.get("/tipps/")
+        content = response.content.decode()
+        assert "Bearbeiten" in content
+
+    def test_edit_button_not_visible_to_others(self, auth_client, user2):
+        Tipp.objects.create(author=user2, summary="Other Tipp", description="desc")
+        response = auth_client.get("/tipps/")
+        content = response.content.decode()
+        assert "Bearbeiten" not in content

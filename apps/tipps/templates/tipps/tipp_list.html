@@ -52,6 +52,7 @@
         <article class="quote {% if tipp.author_id == user.pk %}quote-edit{% endif %}">
           {% if tipp.author_id == user.pk %}
               <div class="edit">
+                  <a class="button" href="{% url 'tipps:tipp_edit' tipp.pk %}">Bearbeiten</a>
                   {% url 'tipps:tipp_delete' tipp.pk as delete_url %}
                   {% include 'front/blocks/delete_button.html' with small_button=1 delete_url=delete_url %}
               </div>
