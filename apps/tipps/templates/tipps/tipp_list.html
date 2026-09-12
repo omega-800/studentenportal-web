@@ -34,8 +34,8 @@
     </form>
 
     <div class="sort-toggle">
-        <a class="button{% if current_sort == 'votes' %} button-primary{% endif %}" href="?sort=votes{% if search_query %}&q={{ search_query }}{% endif %}">Beliebteste</a>
-        <a class="button{% if current_sort == 'date' %} button-primary{% endif %}" href="?sort=date{% if search_query %}&q={{ search_query }}{% endif %}">Neueste</a>
+        <a class="button{% if current_sort == 'votes' %} button-primary{% endif %}" href="?sort=votes{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">Beliebteste</a>
+        <a class="button{% if current_sort == 'date' %} button-primary{% endif %}" href="?sort=date{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">Neueste</a>
     </div>
 
     {% if user.is_authenticated %}

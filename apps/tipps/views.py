@@ -42,7 +42,18 @@ class TippList(ListView):
         if sort == "date":
             qs = qs.order_by("-date")
         else:
-            qs = qs.order_by("-upvote_count", "-date")
+            qs = qs.extra(
+                select={
+                    "vote_sum_sort": (
+                        "(SELECT COUNT(*) FROM tipps_tippvote"
+                        " WHERE tipps_tippvote.tipp_id = tipps_tipp.id AND vote = 't')"
+                        " - "
+                        "(SELECT COUNT(*) FROM tipps_tippvote"
+                        " WHERE tipps_tippvote.tipp_id = tipps_tipp.id AND vote = 'f')"
+                    )
+                },
+                order_by=["-vote_sum_sort", "-date"],
+            )
 
         return qs
 
@@ -73,6 +84,11 @@ class TippEdit(LoginRequiredMixin, UpdateView):
     model = models.Tipp
     form_class = forms.TippForm
     template_name = "tipps/tipp_form.html"
+
+    def get_object(self, queryset=None):
+        if not hasattr(self, "_object"):
+            self._object = super().get_object(queryset)
+        return self._object
 
     def get(self, request, *args, **kwargs):
         if self.get_object().author != request.user:
@@ -128,6 +144,11 @@ class TippCommentEdit(LoginRequiredMixin, UpdateView):
     form_class = forms.TippCommentForm
     template_name = "tipps/comment_form.html"
 
+    def get_object(self, queryset=None):
+        if not hasattr(self, "_object"):
+            self._object = super().get_object(queryset)
+        return self._object
+
     def get(self, request, *args, **kwargs):
         if self.get_object().author != request.user:
             return HttpResponseForbidden("Du darfst keine fremden Kommentare bearbeiten.")
@@ -148,6 +169,11 @@ class TippCommentEdit(LoginRequiredMixin, UpdateView):
 class TippCommentDelete(LoginRequiredMixin, DeleteView):
     model = models.TippComment
     template_name = "tipps/comment_confirm_delete.html"
+
+    def get_object(self, queryset=None):
+        if not hasattr(self, "_object"):
+            self._object = super().get_object(queryset)
+        return self._object
 
     def get(self, request, *args, **kwargs):
         comment = self.get_object()
