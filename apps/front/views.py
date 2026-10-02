@@ -1,5 +1,3 @@
-import datetime
-
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.sites.shortcuts import get_current_site
@@ -13,6 +11,7 @@ from registration.models import RegistrationProfile
 
 from apps.documents import models as document_models
 from apps.events import models as event_models
+from apps.events.views import add_recurring_events
 from apps.front.mixins import LoginRequiredMixin
 from apps.lecturers import models as lecturer_models
 
@@ -24,9 +23,8 @@ class Home(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["events_future"] = event_models.Event.objects.filter(
-            start_date__gte=datetime.date.today()
-        ).order_by("start_date", "start_time")
+        events_future, _ = add_recurring_events(event_models.Event.objects.all())
+        context["events_future"] = events_future
         return context
 
 

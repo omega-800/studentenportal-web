@@ -1,5 +1,5 @@
 import re
-from datetime import timedelta
+from datetime import date, timedelta
 
 import pytest
 from django.contrib.auth import get_user_model
@@ -11,6 +11,8 @@ from django.utils import timezone
 from model_bakery import baker
 from pytest_django.asserts import assertRedirects
 from registration.models import RegistrationProfile
+
+from apps.events import models as event_models
 
 User = get_user_model()
 
@@ -33,6 +35,37 @@ def login(self):
 def test_home_view(client):
     response = client.get("/")
     assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_home_view_recurring_events(client):
+    """Past occurrences of recurring events must not appear in the
+    "Kommende Veranstaltungen" section of the home page."""
+    today = date.today()
+    # Fully in the past: none of its occurrences may show up
+    event_models.Event.objects.create(
+        summary="Home Past Recurring",
+        description="d",
+        start_date=today - timedelta(days=21),
+        repeats=True,
+        repeat_every=1,
+        repeat_unit="week",
+        repeat_ends=today - timedelta(days=7),
+    )
+    # Started in the past, still runs in the future: only the upcoming
+    # occurrence (one week from now) may show up
+    event_models.Event.objects.create(
+        summary="Home Ongoing Recurring",
+        description="d",
+        start_date=today - timedelta(days=14),
+        repeats=True,
+        repeat_every=1,
+        repeat_unit="week",
+        repeat_ends=today + timedelta(days=7),
+    )
+    content = client.get("/").content.decode("utf-8")
+    assert "Home Past Recurring" not in content
+    assert content.count("Home Ongoing Recurring") == 1
 
 
 @pytest.mark.django_db
