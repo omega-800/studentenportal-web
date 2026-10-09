@@ -1,3 +1,5 @@
+import uuid
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
@@ -23,21 +25,27 @@ def send_event_notification(event):
         recipients = user.notification_addresses()
         if not recipients:
             continue
+        notification = models.EventNotification.objects.create(
+            user=user, event=event, token=uuid.uuid4().hex
+        )
         context = {
             "user": user,
             "event": event,
             "event_url": "%s%s"
             % (settings.SITE_URL, reverse("events:event_detail", args=[event.pk])),
             "profile_url": "%s%s" % (settings.SITE_URL, reverse("profile")),
+            "pixel_url": notification.pixel_url(),
         }
         subject = render_to_string("events/event_notification_subject.txt", context)
         subject = "".join(subject.splitlines())
         body = render_to_string("events/event_notification.txt", context)
+        html_body = render_to_string("events/event_notification.html", context)
         send_mail(
             subject,
             body,
             settings.DEFAULT_FROM_EMAIL,
             recipients,
+            html_message=html_body,
             fail_silently=True,
         )
 

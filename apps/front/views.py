@@ -244,4 +244,18 @@ class Stats(LoginRequiredMixin, TemplateView):
             .order_by("-quotes_count")
         )
 
+        # Event notifications
+        context["event_notifications_sent"] = (
+            event_models.EventNotification.objects.count()
+        )
+        context["event_notifications_opened"] = (
+            event_models.EventNotification.objects.filter(
+                opened_at__isnull=False
+            ).count()
+        )
+        sent = context["event_notifications_sent"]
+        context["event_notifications_rate"] = (
+            round(100 * context["event_notifications_opened"] / sent) if sent else None
+        )
+
         return context

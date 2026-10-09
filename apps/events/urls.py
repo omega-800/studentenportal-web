@@ -18,4 +18,9 @@ urlpatterns = [
     ),
     re_path(r"^calendar.ics$", views.EventCalendar.as_view(), name="event_calendar"),
     re_path(r"^rss$", views.EventFeed(), name="event_feed"),
+    re_path(
+        r"^notification-pixel/(?P<token>[0-9a-f]{32})/$",
+        views.EventNotificationPixel.as_view(),
+        name="event_notification_pixel",
+    ),
 ]

@@ -9,6 +9,7 @@ from django.contrib.syndication.views import Feed
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic import TemplateView, View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
@@ -252,6 +253,33 @@ class EventCalendar(View):
             if event.author:
                 vevent.add("comment").value = "Erfasst von %s" % event.author.name()
         return HttpResponse(cal.serialize(), content_type="text/calendar")
+
+
+class EventNotificationPixel(View):
+    """1x1 tracking pixel for event notification e-mails.
+
+    Loading the image marks the notification as opened (the first hit
+    wins). Always returns a valid image, so e-mail clients don't display
+    a broken-image icon for unknown or already-used tokens.
+    """
+
+    http_method_names = ["get", "head"]
+
+    #: A 1x1 transparent GIF.
+    pixel = (
+        b"GIF89a\x01\x00\x01\x00\x80\x01\x00\x00\x00\x00\xff\xff\xff"
+        b"\x21\xf9\x04\x00\x00\x00\x00\x00"
+        b"\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x44\x01\x00\x3b"
+    )
+
+    def get(self, request, token):
+        models.EventNotification.objects.filter(
+            token=token, opened_at__isnull=True
+        ).update(opened_at=timezone.now())
+        response = HttpResponse(self.pixel, content_type="image/gif")
+        response["Cache-Control"] = "no-store"
+        response["X-Content-Type-Options"] = "nosniff"
+        return response
 
 
 class EventFeed(Feed):

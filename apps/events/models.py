@@ -82,6 +82,17 @@ class Event(models.Model):
         help_text="Bild oder Flyer",
     )
 
+    def notification_stats(self):
+        """Number of e-mail notifications sent for this event, how many
+        were opened (via the tracking pixel) and the open rate in percent."""
+        sent = self.notifications.count()
+        opened = self.notifications.filter(opened_at__isnull=False).count()
+        return {
+            "sent": sent,
+            "opened": opened,
+            "rate": round(100 * opened / sent) if sent else None,
+        }
+
     def is_over(self):
         """Return whether the start_date has already passed or not.
         On the start_date day itself, is_over() will return False."""
@@ -100,3 +111,40 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.start_date} {self.summary}"
+
+
+class EventNotification(models.Model):
+    """A notification e-mail that was sent about an event to a single user.
+
+    ``opened_at`` is set when the tracking pixel in the e-mail was loaded,
+    i.e. when the user (probably) opened the e-mail.
+    """
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="event_notifications",
+        on_delete=models.CASCADE,
+    )
+    event = models.ForeignKey(
+        Event, related_name="notifications", on_delete=models.CASCADE
+    )
+    token = models.CharField(max_length=64, unique=True)
+    sent_at = models.DateTimeField(auto_now_add=True)
+    opened_at = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def is_opened(self):
+        return self.opened_at is not None
+
+    def pixel_url(self):
+        from django.conf import settings as django_settings
+
+        from django.urls import reverse
+
+        return "%s%s" % (
+            django_settings.SITE_URL,
+            reverse("events:event_notification_pixel", args=[self.token]),
+        )
+
+    def __str__(self):
+        return f"{self.user} / {self.event}"

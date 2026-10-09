@@ -114,6 +114,54 @@ def test_event_notification_falls_back_to_username():
 
 
 @pytest.mark.django_db
+def test_event_notification_has_tracking_pixel():
+    """The e-mail is sent as multipart and the HTML part contains the
+    tracking pixel with the per-user token."""
+    baker.make(User, username="pixel.me", email="pixel@ost.ch")
+
+    event = create_event()
+
+    assert len(mail.outbox) == 1
+    message = mail.outbox[0]
+    assert "multipart/alternative" in message.message().as_string()
+    html_parts = [
+        part for part, mimetype in message.alternatives if mimetype == "text/html"
+    ]
+    assert len(html_parts) == 1
+    notification = models.EventNotification.objects.get(
+        event=event, user__username="pixel.me"
+    )
+    assert notification.token in html_parts[0]
+    assert (
+        'src="https://studentenportal.ch/events/notification-pixel/%s/"'
+        % (notification.token)
+        in html_parts[0]
+    )
+    assert "Test Event" in html_parts[0]
+    # The plain-text part must not contain the pixel
+    assert notification.token not in message.body
+
+
+@pytest.mark.django_db
+def test_event_notification_one_row_per_user():
+    baker.make(User, username="a.user", email="a@ost.ch")
+    baker.make(User, username="b.user", email="b@ost.ch")
+    baker.make(
+        User, username="c.user", email="c@ost.ch", receive_event_notifications=False
+    )
+
+    event = create_event()
+
+    assert models.EventNotification.objects.filter(event=event).count() == 2
+    tokens = set(
+        models.EventNotification.objects.filter(event=event).values_list(
+            "token", flat=True
+        )
+    )
+    assert len(tokens) == 2
+
+
+@pytest.mark.django_db
 def test_event_notification_not_sent_when_disabled():
     baker.make(User, username="notify.me", email="notify@ost.ch")
 

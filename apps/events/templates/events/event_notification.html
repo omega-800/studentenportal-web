@@ -1,0 +1,18 @@
+<p>Hey {{ user.name|default:user.username }},</p>
+
+<p>auf studentenportal.ch wurde ein neues Event erfasst:</p>
+
+<ul>
+    <li><strong>{{ event.summary }}</strong></li>
+    <li>{{ event.start_date|date:"D, d. F Y" }}{% if event.start_time %} {{ event.start_time|time:"H:i" }}{% endif %}{% if event.end_date %} - {{ event.end_date|date:"d. F Y" }}{% elif event.end_time %} - {{ event.end_time|time:"H:i" }}{% endif %}</li>
+    {% if event.location %}<li>Ort: {{ event.location }}</li>{% endif %}
+    <li>{{ event_url }}</li>
+</ul>
+
+<p>M&ouml;chtest du keine Event-Benachrichtigungen mehr erhalten, kannst du sie
+unter <a href="{{ profile_url }}">{{ profile_url }}</a> deaktivieren.</p>
+
+<p>Cheers,<br />
+Das Studentenportal</p>
+
+<img src="{{ pixel_url }}" width="1" height="1" style="display:none" alt="" />

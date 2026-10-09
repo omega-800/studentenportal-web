@@ -51,6 +51,12 @@
         {% if event.url %}<li><strong>Website:</strong> {{ event.url|urlize }}</li>{% endif %}
     </ul>
 
+    {% with stats=event.notification_stats %}
+        {% if stats.sent %}
+            <p><em>E-Mail-Benachrichtigung: an {{ stats.sent }} Benutzer gesendet, von {{ stats.opened }} geöffnet ({{ stats.rate }} %).</em></p>
+        {% endif %}
+    {% endwith %}
+
     {% if event.picture %}
         <div id="event_picture">
             <img src="{% thumbnail event.picture 600x500 %}" alt="Bild/Flyer zu {{ event.summary }}">

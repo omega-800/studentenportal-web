@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from model_bakery import baker
 
@@ -270,3 +270,129 @@ def test_event_list_past_pagination(client):
     assert "Past 54" in content
     content = client.get("/events/").content.decode()
     assert "Past 54" not in content
+
+
+@pytest.mark.django_db
+def test_notification_pixel_marks_opened(client):
+    user = baker.make(
+        User, username="px.user", email="px@ost.ch", receive_event_notifications=False
+    )
+    event = models.Event.objects.create(
+        summary="Px", description="d", start_date=datetime.date.today(), author=user
+    )
+    token = "ab" * 16
+    notification = models.EventNotification.objects.create(
+        user=user, event=event, token=token
+    )
+    url = reverse("events:event_notification_pixel", args=[token])
+    response = client.get(url)
+    assert response.status_code == 200
+    assert response["Content-Type"] == "image/gif"
+    assert response["Cache-Control"] == "no-store"
+    notification.refresh_from_db()
+    assert notification.is_opened
+    first_open = notification.opened_at
+    client.get(url)
+    notification.refresh_from_db()
+    assert notification.opened_at == first_open
+
+
+@pytest.mark.django_db
+def test_notification_pixel_unknown_token(client):
+    response = client.get(reverse("events:event_notification_pixel", args=["0" * 32]))
+    assert response.status_code == 200
+    assert response["Content-Type"] == "image/gif"
+    assert models.EventNotification.objects.count() == 0
+
+
+@pytest.mark.django_db
+def test_event_detail_shows_notification_stats(client):
+    user = baker.make(
+        User,
+        username="stats.user",
+        email="s@ost.ch",
+        receive_event_notifications=False,
+    )
+    event = models.Event.objects.create(
+        summary="Stats Event",
+        description="d",
+        start_date=datetime.date.today(),
+        author=user,
+    )
+    n1 = models.EventNotification.objects.create(user=user, event=event, token="1" * 32)
+    n2 = models.EventNotification.objects.create(user=user, event=event, token="2" * 32)
+    models.EventNotification.objects.filter(pk=n2.pk).update(
+        opened_at=datetime.datetime(2026, 1, 1, 12)
+    )
+    response = client.get("/events/%d/" % event.pk)
+    content = response.content.decode("utf-8")
+    assert "an 2 Benutzer gesendet, von 1 geöffnet (50 %)" in content
+
+
+@pytest.mark.django_db
+def test_event_detail_without_notifications_shows_no_stats(client):
+    event = models.Event.objects.create(
+        summary="No Stats", description="d", start_date=datetime.date.today()
+    )
+    response = client.get("/events/%d/" % event.pk)
+    content = response.content.decode("utf-8")
+    assert "E-Mail-Benachrichtigung" not in content
+
+
+@pytest.mark.django_db
+def test_stats_page_shows_event_notification_totals(auth_client):
+    user = baker.make(
+        User, username="t.user", email="t@ost.ch", receive_event_notifications=False
+    )
+    with override_settings(EVENT_NOTIFICATIONS_ENABLED=False):
+        event = models.Event.objects.create(
+            summary="T",
+            description="d",
+            start_date=datetime.date.today(),
+            author=user,
+        )
+    n1 = models.EventNotification.objects.create(user=user, event=event, token="3" * 32)
+    models.EventNotification.objects.filter(pk=n1.pk).update(
+        opened_at=datetime.datetime(2026, 1, 1, 12)
+    )
+    response = auth_client.get("/statistiken/")
+    content = response.content.decode("utf-8")
+    assert "E-Mails gesendet: 1, davon geöffnet: 1 (100 %)" in content
+
+
+@pytest.mark.django_db
+def test_stats_page_without_notifications(auth_client):
+    response = auth_client.get("/statistiken/")
+    content = response.content.decode("utf-8")
+    assert "E-Mails gesendet: 0" in content
+    assert "davon geöffnet" not in content
+
+
+@pytest.mark.django_db
+def test_event_admin_shows_notification_stats(client):
+    admin_user = baker.make(
+        User,
+        username="boss",
+        is_staff=True,
+        is_superuser=True,
+        receive_event_notifications=False,
+    )
+    client.force_login(admin_user)
+    other = baker.make(
+        User, username="o.user", email="o@ost.ch", receive_event_notifications=False
+    )
+    event = models.Event.objects.create(
+        summary="Admin Event",
+        description="d",
+        start_date=datetime.date.today(),
+        author=other,
+    )
+    n = models.EventNotification.objects.create(user=other, event=event, token="4" * 32)
+    models.EventNotification.objects.filter(pk=n.pk).update(
+        opened_at=datetime.datetime(2026, 1, 1, 12)
+    )
+    response = client.get("/admin/events/event/")
+    content = response.content.decode("utf-8")
+    assert "E-Mails gesendet" in content
+    assert "Öffnungsrate" in content
+    assert "100 %" in content

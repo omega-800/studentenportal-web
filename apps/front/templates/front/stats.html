@@ -54,4 +54,11 @@
 
     </ul>
 
+    <hr>
+    <h2>Event-Benachrichtigungen</h2>
+
+    <ul>
+        <li>E-Mails gesendet: {{ event_notifications_sent }}{% if event_notifications_rate is not None %}, davon geöffnet: {{ event_notifications_opened }} ({{ event_notifications_rate }} %){% endif %}</li>
+    </ul>
+
 {% endblock %}
